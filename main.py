@@ -2585,3 +2585,5 @@ class IconRightSampleWidget(IRightBodyTouch, MDCheckbox):
 
 if __name__ == '__main__':
     KitchenSink().run()
+
+
