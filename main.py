@@ -9,11 +9,12 @@ sys.path.append(os.path.abspath(__file__).split('demos')[0])
 
 from kivy import platform
 
-if platform in ('linux', 'macosx'):
+
+if platform in ('linux', 'macosx', 'windows'):
     from kivy.config import Config
 
-    Config.set('graphics', 'width', '400')
-    Config.set('graphics', 'height', '600')
+    Config.set('graphics', 'width', '200')
+    Config.set('graphics', 'height', '200')
 
 from kivy.app import App
 from kivy.clock import Clock
@@ -326,13 +327,17 @@ NavigationLayout:
                             id: textButton_1
                             text: "1"
                             font_size: dp(25)
-                            on_release: app.root.ids.scr_mngr.current = 'job_entry'
-                            #on_release: app.add_cards(grid_card_1)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                
+                                #app.add_cards(grid_card_1)
                         MDTextButton:
                             id: textButton_2
                             text: "2"
                             font_size: dp(25)
-                            on_release: app.root.ids.scr_mngr.current = 'job_entry'
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_1.text,month_label.text)
                             #on_release: app.add_cards(grid_card_1)
                         MDTextButton:
                             id: textButton_3
@@ -490,19 +495,21 @@ NavigationLayout:
 
                 BoxLayout:
                     orientation: "vertical"
+                    padding: dp(15)
 
                     BoxLayout:
                         orientation: "vertical"
                         height: self.minimum_height
                         spacing: '10dp'
 
-                        MDTextField:    
+                        MDTextField:
+                            id: name_job    
                             multiline: True
                             hint_text: "Название дела"
                             helper_text: "Придумайте краткое название"
                             helper_text_mode: "on_focus"
                             max_text_length: 10
-
+                            
                         MDTextField:
                             multiline: True
                             hint_text: "Описание"
@@ -551,7 +558,9 @@ NavigationLayout:
                             #halign: 'centr'
                             md_bg_color: app.theme_cls.primary_color
                             theme_text_color: 'Primary'
-                            #on_press: app.root.ids.scr_mngr.current = 'day'
+                            on_press: 
+                                app.root.ids.scr_mngr.current = 'day'
+                                app.get_string(name_job.text)
 
                         MDFloatingActionButton:
                             icon: 'check'
@@ -559,7 +568,23 @@ NavigationLayout:
                             elevation_normal: 8
                             #halign: 'right'
                             md_bg_color: app.theme_cls.primary_color
-                            #on_press: app.root.ids.scr_mngr.current = 'test'   
+                            #on_press: app.root.ids.scr_mngr.current = 'test'
+                            
+            ###################################################################
+            #
+            #                           DAY
+            #
+            ###################################################################   
+            
+            Screen:
+                name: 'day'
+                MDLabel:
+                    id: job_label
+                    font_style: 'Body1'
+                    theme_text_color: 'Primary'
+                    #text: app.get_string()
+                    halign: 'center'
+            
 
             ###################################################################
             #
@@ -1650,6 +1675,10 @@ class KitchenSink(App):
         self.name_year = None
         Window.bind(on_keyboard=self.events)
 
+    def get_string(self, string):
+        print(string)
+        self.main_widget.ids.job_label.text = str(string)
+
     def get_time_picker_data(self, instance, time):
         self.root.ids.time_label.text = str(time)
         self.previous_time = time
@@ -2224,6 +2253,10 @@ class KitchenSink(App):
             self.name_month = all_months[(all_months.index(self.name_month)) + 1]
             g = calendar.monthrange(self.name_year, all_months.index(self.name_month))
             self.number_day(g[0], g[1])
+
+    def change_title(self, mounth, day):
+        print(mounth,day,self.name_year)
+        #self.main_widget.ids.toolbar.title =
 
     def theme_picker_open(self):
         if not self.md_theme_picker:
