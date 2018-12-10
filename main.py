@@ -329,7 +329,7 @@ NavigationLayout:
                             font_size: dp(25)
                             on_release: 
                                 app.root.ids.scr_mngr.current = 'job_entry'
-                                
+                                app.change_title(textButton_1.text,month_label.text)
                                 #app.add_cards(grid_card_1)
                         MDTextButton:
                             id: textButton_2
@@ -337,152 +337,257 @@ NavigationLayout:
                             font_size: dp(25)
                             on_release: 
                                 app.root.ids.scr_mngr.current = 'job_entry'
-                                app.change_title(textButton_1.text,month_label.text)
+                                app.change_title(textButton_2.text,month_label.text)
                             #on_release: app.add_cards(grid_card_1)
                         MDTextButton:
                             id: textButton_3
                             text: "3"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_3.text,month_label.text)
                         MDTextButton:
                             id: textButton_4
                             text: "4"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_4.text,month_label.text)
                         MDTextButton:
                             id: textButton_5
                             text: "5"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_5.text,month_label.text)
                         MDTextButton:
                             id: textButton_6
                             text: "6"
                             font_size: dp(25) 
                             opposite_colors: True
                             theme_text_color: 'Error'
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_6.text,month_label.text)
                         MDTextButton:
                             id: textButton_7
                             text: "7"
                             font_size: dp(25)
                             opposite_colors: False
                             theme_text_color: 'Error'
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_7.text,month_label.text)
                         MDTextButton:
                             id: textButton_8
                             text: "8"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_8.text,month_label.text)
                         MDTextButton:
                             id: textButton_9
                             text: "9"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_9.text,month_label.text)
                         MDTextButton:
                             id: textButton_10
                             text: "10"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_10.text,month_label.text)
                         MDTextButton:
                             id: textButton_11
                             text: "11"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_11.text,month_label.text)
                         MDTextButton:
                             id: textButton_12
                             text: "12"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_12.text,month_label.text)
                         MDTextButton:
                             id: textButton_13
                             text: "13"
-                            font_size: dp(25) 
+                            font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_13.text,month_label.text) 
                         MDTextButton:
                             id: textButton_14
                             text: "14"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_14.text,month_label.text)
                         MDTextButton:
                             id: textButton_15
                             text: "15"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_15.text,month_label.text)
                         MDTextButton:
                             id: textButton_16
                             text: "16"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_16.text,month_label.text)
                         MDTextButton:
                             id: textButton_17
                             text: "17"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_17.text,month_label.text)
                         MDTextButton:
                             id: textButton_18
                             text: "18"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_18.text,month_label.text)
                         MDTextButton:
                             id: textButton_19
                             text: "19"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_19.text,month_label.text)
                         MDTextButton:
                             id: textButton_20
                             text: "20"
-                            font_size: dp(25) 
+                            font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_20.text,month_label.text) 
                         MDTextButton:
                             id: textButton_21
                             text: "21"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_21.text,month_label.text)
                         MDTextButton:
                             id: textButton_22
                             text: "22"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_22.text,month_label.text)
                         MDTextButton:
                             id: textButton_23
                             text: "23"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_23.text,month_label.text)
                         MDTextButton:
                             id: textButton_24
                             text: "24"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_24.text,month_label.text)
                         MDTextButton:
                             id: textButton_25
                             text: "25"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_25.text,month_label.text)
                         MDTextButton:
                             id: textButton_26
                             text: "26"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_26.text,month_label.text)
                         MDTextButton:
                             id: textButton_27
                             text: "27"
-                            font_size: dp(25) 
+                            font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_27.text,month_label.text) 
                         MDTextButton:
                             id: textButton_28
                             text: "28"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_28.text,month_label.text)
                         MDTextButton:
                             id: textButton_29
                             text: "29"
-                            font_size: dp(25) 
+                            font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_29.text,month_label.text) 
                         MDTextButton:
                             id: textButton_30
                             text: "30"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_30.text,month_label.text)
                         MDTextButton:
                             id: textButton_31
                             text: "31"
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_31.text,month_label.text)
                         MDTextButton:
                             id: textButton_32
                             text: ''
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_32.text,month_label.text)
                         MDTextButton:
                             id: textButton_33
                             text: ''
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_33.text,month_label.text)
                         MDTextButton:
                             id: textButton_34
                             text: ''
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_34.text,month_label.text)
                         MDTextButton:
                             id: textButton_35
                             text: ''
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_35.text,month_label.text)
                         MDTextButton:
                             id: textButton_36
                             text: ''
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_36.text,month_label.text)
                         MDTextButton:
                             id: textButton_37
                             text: ''
                             font_size: dp(25)
+                            on_release: 
+                                app.root.ids.scr_mngr.current = 'job_entry'
+                                app.change_title(textButton_37.text,month_label.text)
 
 
             ###################################################################
@@ -508,7 +613,7 @@ NavigationLayout:
                             hint_text: "Название дела"
                             helper_text: "Придумайте краткое название"
                             helper_text_mode: "on_focus"
-                            max_text_length: 10
+                            #max_text_length: 10
                             
                         MDTextField:
                             multiline: True
@@ -520,6 +625,7 @@ NavigationLayout:
                     BoxLayout:
                         orientation: "vertical"
                         spacing: 5                      
+                        
                         MDFloatingActionButton:
                             icon: 'alarm-check'
                             opposite_colors: True
@@ -527,7 +633,8 @@ NavigationLayout:
                             on_press: app.show_example_time_picker()
 
                         BoxLayout:
-                            #spacing: 5    
+                            #spacing: 5 
+                            halign: 'left' 
                             MDLabel:
                                 text: 'Время:'
                                 theme_text_color: 'Primary'    
@@ -536,7 +643,7 @@ NavigationLayout:
                                 theme_text_color: 'Primary'
                                 #size_hint: None, None
                                 size: dp(48)*3, dp(48)
-
+                            
                     BoxLayout:
                         #size_hint: (1, .2)
                         spacing: '10dp'
@@ -2254,9 +2361,10 @@ class KitchenSink(App):
             g = calendar.monthrange(self.name_year, all_months.index(self.name_month))
             self.number_day(g[0], g[1])
 
-    def change_title(self, mounth, day):
-        print(mounth,day,self.name_year)
-        #self.main_widget.ids.toolbar.title =
+    def change_title(self, day, mounth):
+        print(day,mounth,self.name_year)
+        f = str(day) +' '+ str(mounth)+' ' + ' ' + str(self.name_year)
+        self.main_widget.ids.toolbar.title = str(f)
 
     def theme_picker_open(self):
         if not self.md_theme_picker:
