@@ -296,7 +296,6 @@ NavigationLayout:
                                         on_press: app.previous_month()
             
                                     MDLabel:
-                                            #size_hint: (1, .2)
                                         id: month_label
                                         font_style: 'Display3'
                                         theme_text_color: 'Primary'
