@@ -31,7 +31,7 @@ from kivymd.bottomsheet import MDListBottomSheet, MDGridBottomSheet
 from kivymd.button import MDIconButton
 from kivymd.date_picker import MDDatePicker
 from kivymd.dialog import MDInputDialog, MDDialog
-from kivymd.list import ILeftBody, ILeftBodyTouch, IRightBodyTouch
+from kivymd.list import ILeftBody, ILeftBodyTouch, IRightBodyTouch, MDList, ThreeLineListItem
 from kivymd.material_resources import DEVICE_TYPE
 from kivymd.selectioncontrols import MDCheckbox
 from kivymd.snackbar import Snackbar
@@ -709,7 +709,7 @@ NavigationLayout:
                             theme_text_color: 'Primary'
                             on_press: 
                                 app.root.ids.scr_mngr.current = 'day'
-                                app.get_string1(name_job.text,description.text)
+                                #app.get_string1(name_job.text,description.text)
                                 
                         MDFloatingActionButton:
                             icon: 'check'
@@ -727,18 +727,28 @@ NavigationLayout:
             
             Screen:
                 name: 'day'
-
+                on_enter: app.day_task(h);
+                
                 ScrollView:
+                    size_hint: 1, 1
                     do_scroll_x: False
+                    
+                    BoxLayout:
+                        id: h
+                        orientation: "vertical"
+                        spacing: 5 
+                        halign: 'centr' 
+                         
+                    
 
-                    MDList:
-                        id: ml
-                        ThreeLineListItem:
-                            id: day_label
-                            #text: "Three-line item"
-                            #secondary_text:
-                                #"This is a multi-line label where you can " \
-                                #"fit more text than usual"
+                #    MDList:
+                #        id: ml
+                #        ThreeLineListItem:
+                #            id: day_label
+                #            #text: "Three-line item"
+                #            #secondary_text:
+                #                #"This is a multi-line label where you can " \
+                #                #"fit more text than usual"
                     
                 
             
@@ -2426,6 +2436,21 @@ class KitchenSink(App):
         if not self.md_theme_picker:
             self.md_theme_picker = MDThemePicker()
         self.md_theme_picker.open()
+
+    def day_task(self, m):
+        screen = self.main_widget.ids.scr_mngr.get_screen('day')
+        number = 8
+        text1 = 'aaaaa'
+        text2 = 'bbbbb'
+        for number in range(10):
+            m.add_widget(ThreeLineListItem(
+                text=text1, secondary_text=text2)
+            )
+
+        #for number in range(10):
+        #    screen.add_widget(ThreeLineListItem(
+        #        text='aaaaa', secondary_text = 'lllll')
+        #                  )
 
     def example_add_stack_floating_buttons(self):
         def set_my_language(instance_button):
