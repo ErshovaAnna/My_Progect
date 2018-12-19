@@ -655,6 +655,7 @@ NavigationLayout:
                             #max_text_length: 10
                             
                         MDTextField:
+                            id: description
                             multiline: True
                             hint_text: "Описание"
                             #helper_text: "Опишите все подробности задания"
@@ -708,8 +709,8 @@ NavigationLayout:
                             theme_text_color: 'Primary'
                             on_press: 
                                 app.root.ids.scr_mngr.current = 'day'
-                                app.get_string(name_job.text)
-
+                                app.get_string1(name_job.text,description.text)
+                                
                         MDFloatingActionButton:
                             icon: 'check'
                             opposite_colors: True
@@ -726,12 +727,18 @@ NavigationLayout:
             
             Screen:
                 name: 'day'
-                MDLabel:
-                    id: job_label
-                    font_style: 'Body1'
-                    theme_text_color: 'Primary'
-                    #text: app.get_string()
-                    halign: 'center'
+
+                ScrollView:
+                    do_scroll_x: False
+
+                    MDList:
+                        id: ml
+                        ThreeLineListItem:
+                            id: day_label
+                            #text: "Three-line item"
+                            #secondary_text:
+                                #"This is a multi-line label where you can " \
+                                #"fit more text than usual"
                     
                 
             
@@ -1825,9 +1832,13 @@ class KitchenSink(App):
         self.name_year = None
         Window.bind(on_keyboard=self.events)
 
-    def get_string(self, string):
-        print(string)
-        self.main_widget.ids.job_label.text = str(string)
+    def get_string1(self, string1, string2):
+        print(string1)
+        print(string2)
+        self.main_widget.ids.day_label.text = str(string1)
+        self.main_widget.ids.day_label.secondary_text = str(string2)
+
+
 
     def get_time_picker_data(self, instance, time):
         self.root.ids.time_label.text = str(time)
@@ -2408,7 +2419,7 @@ class KitchenSink(App):
 
     def change_title(self, day, mounth):
         print(day,mounth,self.name_year)
-        f = str(day) +' '+ str(mounth)+' ' + ' ' + str(self.name_year)
+        f = str(day) +' '+ str(mounth)+ ' ' + ' ' + str(self.name_year)
         self.main_widget.ids.toolbar.title = str(f)
 
     def theme_picker_open(self):
