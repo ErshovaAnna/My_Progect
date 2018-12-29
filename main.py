@@ -4,6 +4,7 @@ import os
 import sys
 import calendar
 import datetime
+import mysql.connector
 
 sys.path.append(os.path.abspath(__file__).split('demos')[0])
 
@@ -606,21 +607,23 @@ NavigationLayout:
                         name: 'banking'
                         text: "Задание"
                         icon: 'calendar-check'
-                        BoxLayout:
-                            orientation: 'vertical'
-                            size_hint_y: None
-                            padding: dp(48)
-                            spacing: 10
-                            MDTextField:
-                                hint_text: "You can put any widgets here"
-                                helper_text: "Hello :)"
-                                helper_text_mode: "on_focus"
+                        on_enter: app.nnn(k)
+                        
+                        ScrollView:
+                            size_hint: 1, 1
+                            #do_scroll_x: False
+                            BoxLayout:
+                                id: k
+                                orientation: "vertical"
+                                spacing: 5 
+                                halign: 'centr' 
 
                     MDBottomNavigationItem:
                         name: 'bottom_navigation_desktop_1'
                         text: "Заметки"
                         icon: 'format-annotation-plus'
                         id: bottom_navigation_desktop_1
+                        on_enter: app.test_conection()
                         BoxLayout:
                             orientation: 'vertical'
                             size_hint_y: None
@@ -709,7 +712,7 @@ NavigationLayout:
                             theme_text_color: 'Primary'
                             on_press: 
                                 app.root.ids.scr_mngr.current = 'day'
-                                #app.get_string1(name_job.text,description.text)
+                                app.get_string1(name_job.text,description.text)
                                 
                         MDFloatingActionButton:
                             icon: 'check'
@@ -731,8 +734,7 @@ NavigationLayout:
                 
                 ScrollView:
                     size_hint: 1, 1
-                    do_scroll_x: False
-                    
+                    #do_scroll_x: False
                     BoxLayout:
                         id: h
                         orientation: "vertical"
@@ -1812,8 +1814,22 @@ class KitchenSink(App):
     theme_cls.primary_palette = 'Blue'
     previous_date = ObjectProperty()
 
+
+
+
+
     def __init__(self, **kwargs):
         super(KitchenSink, self).__init__(**kwargs)
+
+        self.mydb = mysql.connector.connect(
+            host="127.0.0.1",
+            user="root",
+            passwd="A28nn09a",
+            database = 'new_schema',
+            auth_plugin='mysql_native_password'
+        )
+
+
 
         self.menu_items = [
             {'viewclass': 'MDMenuItem',
@@ -1840,15 +1856,26 @@ class KitchenSink(App):
         self.create_stack_floating_buttons = False
         self.month_calendar = None
         self.name_year = None
+        self.name_name = None
+        self.name_discription = None
         Window.bind(on_keyboard=self.events)
+
+    def test_conection(self):
+
+        mycursor = self.mydb.cursor()
+
+        mycursor.execute("SELECT * FROM new_table")
+
+        for x in mycursor:
+            print(x)
 
     def get_string1(self, string1, string2):
         print(string1)
         print(string2)
-        self.main_widget.ids.day_label.text = str(string1)
-        self.main_widget.ids.day_label.secondary_text = str(string2)
-
-
+        self.name_name = str(string1)
+        self.name_discription = str(string2)
+        #self.main_widget.ids.day_label.text = str(string1)
+        #self.main_widget.ids.day_label.secondary_text = str(string2)
 
     def get_time_picker_data(self, instance, time):
         self.root.ids.time_label.text = str(time)
@@ -2437,11 +2464,18 @@ class KitchenSink(App):
             self.md_theme_picker = MDThemePicker()
         self.md_theme_picker.open()
 
+    def nnn(self, m):
+        text1 = 'vvvv'
+        text2 = 'ggg'
+        for number in range(10):
+            m.add_widget(ThreeLineListItem(
+                text=text1, secondary_text=text2)
+            )
     def day_task(self, m):
-        screen = self.main_widget.ids.scr_mngr.get_screen('day')
-        number = 8
-        text1 = 'aaaaa'
-        text2 = 'bbbbb'
+        #screen = self.main_widget.ids.scr_mngr.get_screen('day')
+        #number = 8
+        text1 = self.name_name
+        text2 = self.name_discription
         for number in range(10):
             m.add_widget(ThreeLineListItem(
                 text=text1, secondary_text=text2)
