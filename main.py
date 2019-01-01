@@ -610,20 +610,25 @@ NavigationLayout:
                         on_enter: app.nnn(k)
                         
                         ScrollView:
+                            id: scroll
                             size_hint: 1, 1
-                            #do_scroll_x: False
+                            do_scroll_x: False
+
                             BoxLayout:
                                 id: k
                                 orientation: "vertical"
                                 spacing: 5 
-                                halign: 'centr' 
+                                size_hint_y: None
+                                height: self.minimum_height                       
 
                     MDBottomNavigationItem:
                         name: 'bottom_navigation_desktop_1'
                         text: "Заметки"
                         icon: 'format-annotation-plus'
                         id: bottom_navigation_desktop_1
-                        on_enter: app.test_conection()
+                        on_enter: 
+                            app.test_conection()
+                            #app.test_insert()
                         BoxLayout:
                             orientation: 'vertical'
                             size_hint_y: None
@@ -720,7 +725,10 @@ NavigationLayout:
                             elevation_normal: 8
                             #halign: 'right'
                             md_bg_color: app.theme_cls.primary_color
-                            #on_press: app.root.ids.scr_mngr.current = 'test'
+                            on_press: 
+                                #app.test_insert()
+                                app.test_insert(name_job.text, description.text, time_label.text)
+                                #app.root.ids.scr_mngr.current = 'test'
                             
             ###################################################################
             #
@@ -1859,15 +1867,18 @@ class KitchenSink(App):
         self.name_name = None
         self.name_discription = None
         Window.bind(on_keyboard=self.events)
+        self.mycursor = self.mydb.cursor()
 
     def test_conection(self):
 
-        mycursor = self.mydb.cursor()
+        #self.mycursor = self.mydb.cursor()
+        task = []
+        #self.mycursor.execute("SELECT * FROM new_table")
+        self.mycursor.execute("SELECT name FROM new_schema.new_table;")
+        for x in self.mycursor:
+            task.append(x)
+        print(task)
 
-        mycursor.execute("SELECT * FROM new_table")
-
-        for x in mycursor:
-            print(x)
 
     def get_string1(self, string1, string2):
         print(string1)
@@ -1880,8 +1891,8 @@ class KitchenSink(App):
     def get_time_picker_data(self, instance, time):
         self.root.ids.time_label.text = str(time)
         self.previous_time = time
-
     def show_calendar(self):
+
         mydate = datetime.datetime.now()
         self.name_year = datetime.datetime.now().year
 
@@ -1921,6 +1932,14 @@ class KitchenSink(App):
         elif mydate.strftime("%B") == 'December':
             self.name_month = 'Декабрь'
             return self.name_month
+
+
+    def test_insert(self, name, discription, time):
+        #self.mycursor = self.mydb.cursor()
+        sql = "INSERT INTO new_table(name, description, datetime) VALUES(%s, %s, %s)"
+        val = (name, discription, "2018-12-29 22:53")
+        self.mycursor.execute(sql, val)
+        self.mydb.commit()
 
     def show_year(self, s):
 
@@ -2465,21 +2484,41 @@ class KitchenSink(App):
         self.md_theme_picker.open()
 
     def nnn(self, m):
-        text1 = 'vvvv'
-        text2 = 'ggg'
-        for number in range(10):
+        task = []
+        self.mycursor.execute("SELECT name FROM new_schema.new_table;")
+        for x in self.mycursor:
+            task.append(x)
+        print(len(task))
+        i = 0
+        while i < len(task):
+            print(task[i])
+
             m.add_widget(ThreeLineListItem(
-                text=text1, secondary_text=text2)
+                text=str(",".join(task[i])), secondary_text='hhh')
             )
+            i = i + 1
+
     def day_task(self, m):
-        #screen = self.main_widget.ids.scr_mngr.get_screen('day')
-        #number = 8
-        text1 = self.name_name
-        text2 = self.name_discription
-        for number in range(10):
+
+        task = []
+        self.mycursor.execute("SELECT name FROM new_schema.new_table;")
+        for x in self.mycursor:
+            task.append(x)
+        print(len(task))
+        i=0
+        while i < len(task):
+            print(task[i])
+
             m.add_widget(ThreeLineListItem(
-                text=text1, secondary_text=text2)
+                text=str(",".join(task[i])), secondary_text='hhh')
             )
+            i = i + 1
+            #print(x)
+        #for number in range(10):
+            #m.add_widget(ThreeLineListItem(
+            #    text=text1, secondary_text=text2)
+            #)
+
 
         #for number in range(10):
         #    screen.add_widget(ThreeLineListItem(
