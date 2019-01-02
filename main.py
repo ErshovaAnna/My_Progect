@@ -32,7 +32,7 @@ from kivymd.bottomsheet import MDListBottomSheet, MDGridBottomSheet
 from kivymd.button import MDIconButton
 from kivymd.date_picker import MDDatePicker
 from kivymd.dialog import MDInputDialog, MDDialog
-from kivymd.list import ILeftBody, ILeftBodyTouch, IRightBodyTouch, MDList, ThreeLineListItem
+from kivymd.list import ILeftBody, ILeftBodyTouch, IRightBodyTouch, MDList, TwoLineListItem
 from kivymd.material_resources import DEVICE_TYPE
 from kivymd.selectioncontrols import MDCheckbox
 from kivymd.snackbar import Snackbar
@@ -274,7 +274,7 @@ NavigationLayout:
                         name: 'octagon'
                         text: "Месяц"
                         icon: "home-outline"
-                        #on_enter: app.root.ids.scr_mngr.current = 'year'
+                        on_enter: app.pusto(k)
                         #on_enter: app.add_cards(grid_card_1)
                         
                         BoxLayout:
@@ -604,11 +604,14 @@ NavigationLayout:
                                             app.change_title(textButton_37.text,month_label.text)
 
                     MDBottomNavigationItem:
+                        id: bottom_navigation
                         name: 'banking'
                         text: "Задание"
                         icon: 'calendar-check'
-                        on_enter: app.nnn(k)
-                        
+                        on_enter: 
+                            app.nnn(k)
+                        #on_leave: app.pusto(k)
+                                                    
                         ScrollView:
                             id: scroll
                             size_hint: 1, 1
@@ -626,7 +629,8 @@ NavigationLayout:
                         text: "Заметки"
                         icon: 'format-annotation-plus'
                         id: bottom_navigation_desktop_1
-                        on_enter: 
+                        on_enter:
+                            app.pusto(k) 
                             app.test_conection()
                             #app.test_insert()
                         BoxLayout:
@@ -704,20 +708,11 @@ NavigationLayout:
                             elevation_normal: 8
                             #halign: 'right'
                             md_bg_color: app.theme_cls.primary_color
-                            on_press: 
+                            on_press:
+                                app.proverka()
                                 app.root.ids.scr_mngr.current = 'main_screen'
                                 app.show_year(3)
 
-                        MDRoundFlatButton:
-                            text:'Просмотр'
-                            opposite_colors: True
-                            elevation_normal: 8
-                            #halign: 'centr'
-                            md_bg_color: app.theme_cls.primary_color
-                            theme_text_color: 'Primary'
-                            on_press: 
-                                app.root.ids.scr_mngr.current = 'day'
-                                app.get_string1(name_job.text,description.text)
                                 
                         MDFloatingActionButton:
                             icon: 'check'
@@ -726,9 +721,10 @@ NavigationLayout:
                             #halign: 'right'
                             md_bg_color: app.theme_cls.primary_color
                             on_press: 
-                                #app.test_insert()
+                                app.root.ids.scr_mngr.current = 'main_screen'
                                 app.test_insert(name_job.text, description.text, time_label.text)
-                                #app.root.ids.scr_mngr.current = 'test'
+                                app.dialog_windofs()
+                                
                             
             ###################################################################
             #
@@ -1822,10 +1818,6 @@ class KitchenSink(App):
     theme_cls.primary_palette = 'Blue'
     previous_date = ObjectProperty()
 
-
-
-
-
     def __init__(self, **kwargs):
         super(KitchenSink, self).__init__(**kwargs)
 
@@ -1836,8 +1828,6 @@ class KitchenSink(App):
             database = 'new_schema',
             auth_plugin='mysql_native_password'
         )
-
-
 
         self.menu_items = [
             {'viewclass': 'MDMenuItem',
@@ -1851,6 +1841,7 @@ class KitchenSink(App):
         self.long_dialog = None
         self.input_dialog = None
         self.alert_dialog = None
+        self.alert_dialog1 = None
         self.ok_cancel_dialog = None
         self.long_dialog = None
         self.dialog = None
@@ -1866,6 +1857,9 @@ class KitchenSink(App):
         self.name_year = None
         self.name_name = None
         self.name_discription = None
+        self.lenwidget = 0
+        self.num_month = 0
+        self.datetim = ''
         Window.bind(on_keyboard=self.events)
         self.mycursor = self.mydb.cursor()
 
@@ -1936,8 +1930,10 @@ class KitchenSink(App):
 
     def test_insert(self, name, discription, time):
         #self.mycursor = self.mydb.cursor()
+        self.datetim = self.datetim + ' ' + str(time)
+        print(self.datetim)
         sql = "INSERT INTO new_table(name, description, datetime) VALUES(%s, %s, %s)"
-        val = (name, discription, "2018-12-29 22:53")
+        val = (name, discription, str(self.datetim))
         self.mycursor.execute(sql, val)
         self.mydb.commit()
 
@@ -1953,6 +1949,9 @@ class KitchenSink(App):
             return str(self.name_year)
         if s == 3:
             self.main_widget.ids.toolbar.title = str(self.name_year)
+
+    def proverka(self):
+        print(self.main_widget.ids.time_label.text)
 
     def number_day(self, day_start, day_finish):
         if day_start == 0:
@@ -2428,7 +2427,7 @@ class KitchenSink(App):
             g = calendar.monthrange(self.name_year, all_months.index(self.name_month))
             self.number_day(g[0], g[1])
 
-    def month_now(self):
+    def number_month(self,month):
         all_months = ["Unknown",
                       "Январь",
                       "Февраль",
@@ -2442,8 +2441,9 @@ class KitchenSink(App):
                       "Октябрь",
                       "Ноябрь",
                       "Декабрь"]
-        g = calendar.monthrange(self.name_year, all_months.index(self.name_month))
-        self.number_day(g[0], g[1])
+        self.num_month = all_months.index(month)
+
+
 
     def next_month(self):
         all_months = ["Unknown",
@@ -2477,6 +2477,9 @@ class KitchenSink(App):
         print(day,mounth,self.name_year)
         f = str(day) +' '+ str(mounth)+ ' ' + ' ' + str(self.name_year)
         self.main_widget.ids.toolbar.title = str(f)
+        self.number_month(mounth)
+        self.datetim = str(self.name_year) + '-' + str(self.num_month) + '-' + str(day)
+        print(self.datetim)
 
     def theme_picker_open(self):
         if not self.md_theme_picker:
@@ -2485,45 +2488,53 @@ class KitchenSink(App):
 
     def nnn(self, m):
         task = []
+        description = []
+        date = []
         self.mycursor.execute("SELECT name FROM new_schema.new_table;")
         for x in self.mycursor:
             task.append(x)
-        print(len(task))
+        self.mycursor.execute("select description from new_schema.new_table;")
+        for x in self.mycursor:
+            description.append(x)
+        self.mycursor.execute("select datetime from new_schema.new_table;")
+        for x in self.mycursor:
+            date.append(x)
+        print(len(description))
+        self.lenwidget = len(task)
         i = 0
         while i < len(task):
             print(task[i])
-
-            m.add_widget(ThreeLineListItem(
-                text=str(",".join(task[i])), secondary_text='hhh')
+            print(description[i])
+            m.add_widget(TwoLineListItem(
+                text=str(",".join(task[i])), secondary_text=str(",".join(description[i])))
             )
             i = i + 1
+        del task[:]
+        task[:] = []
+        del description[:]
+        description[:] = []
+        date[:]
+        date[:] = []
+
+    def pusto(self,m):
+        m.clear_widgets()
 
     def day_task(self, m):
-
         task = []
         self.mycursor.execute("SELECT name FROM new_schema.new_table;")
         for x in self.mycursor:
             task.append(x)
         print(len(task))
         i=0
+        self.lenwidget = len(task)
         while i < len(task):
-            print(task[i])
-
-            m.add_widget(ThreeLineListItem(
-                text=str(",".join(task[i])), secondary_text='hhh')
+            m.add_widget(TwoLineListItem(
+                text=",".join(task[i]), secondary_text='hhh')
             )
-            i = i + 1
-            #print(x)
-        #for number in range(10):
-            #m.add_widget(ThreeLineListItem(
-            #    text=text1, secondary_text=text2)
-            #)
-
-
-        #for number in range(10):
-        #    screen.add_widget(ThreeLineListItem(
-        #        text='aaaaa', secondary_text = 'lllll')
-        #                  )
+            #i = i + 1
+    def open_screen(self):
+        screen = self.main_widget.ids.scr_mngr.get_screen('main_screen')
+        screen.bottom_navigation.open()
 
     def example_add_stack_floating_buttons(self):
         def set_my_language(instance_button):
@@ -2742,6 +2753,14 @@ class KitchenSink(App):
                 title='Title', hint_text='Hint text', size_hint=(.8, .4),
                 text_button_ok='Ok', events_callback=lambda x: None)
         self.input_dialog.open()
+
+    def dialog_windofs(self):
+        if not self.alert_dialog1:
+            self.alert_dialog1 = MDDialog(
+                title = 'Готово', size_hint=(.8, .4), text_button_ok='Ok',
+                text="Задание создано успешно!", events_callback=lambda x: None
+            )
+        self.alert_dialog1.open()
 
     def show_example_alert_dialog(self):
         if not self.alert_dialog:
