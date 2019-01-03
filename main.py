@@ -32,7 +32,7 @@ from kivymd.bottomsheet import MDListBottomSheet, MDGridBottomSheet
 from kivymd.button import MDIconButton
 from kivymd.date_picker import MDDatePicker
 from kivymd.dialog import MDInputDialog, MDDialog
-from kivymd.list import ILeftBody, ILeftBodyTouch, IRightBodyTouch, MDList, TwoLineListItem
+from kivymd.list import ILeftBody, ILeftBodyTouch, IRightBodyTouch, MDList, ThreeLineListItem
 from kivymd.material_resources import DEVICE_TYPE
 from kivymd.selectioncontrols import MDCheckbox
 from kivymd.snackbar import Snackbar
@@ -659,7 +659,7 @@ NavigationLayout:
                         spacing: '10dp'
 
                         MDTextField:
-                            id: name_job    
+                            id: name_job   
                             multiline: True
                             hint_text: "Название дела"
                             helper_text: "Придумайте краткое название"
@@ -721,9 +721,9 @@ NavigationLayout:
                             #halign: 'right'
                             md_bg_color: app.theme_cls.primary_color
                             on_press: 
-                                app.root.ids.scr_mngr.current = 'main_screen'
                                 app.test_insert(name_job.text, description.text, time_label.text)
-                                app.dialog_windofs()
+                                #app.root.ids.scr_mngr.current = 'main_screen'
+                                #app.dialog_windofs()
                                 
                             
             ###################################################################
@@ -1842,6 +1842,7 @@ class KitchenSink(App):
         self.input_dialog = None
         self.alert_dialog = None
         self.alert_dialog1 = None
+        self.alert_dialog2 = None
         self.ok_cancel_dialog = None
         self.long_dialog = None
         self.dialog = None
@@ -1929,13 +1930,21 @@ class KitchenSink(App):
 
 
     def test_insert(self, name, discription, time):
-        #self.mycursor = self.mydb.cursor()
-        self.datetim = self.datetim + ' ' + str(time)
-        print(self.datetim)
-        sql = "INSERT INTO new_table(name, description, datetime) VALUES(%s, %s, %s)"
-        val = (name, discription, str(self.datetim))
-        self.mycursor.execute(sql, val)
-        self.mydb.commit()
+        if (self.main_widget.ids.name_job.text != '') or (self.main_widget.ids.time_label.text != ''):
+            self.datetim = self.datetim + ' ' + str(time)
+            print(self.datetim)
+            sql = "INSERT INTO new_table(name, description, date_time) VALUES(%s, %s, %s)"
+            val = (name, discription, str(self.datetim))
+            self.mycursor.execute(sql, val)
+            self.mydb.commit()
+            self.main_widget.ids.name_job.text = ''
+            self.main_widget.ids.time_label.text = ''
+            self.main_widget.ids.description.text = ''
+            self.main_widget.ids.scr_mngr.get_screen('main_screen')
+
+            self.dialog_windofs()
+        else:
+            self.dialog_exeption()
 
     def show_year(self, s):
 
@@ -2443,8 +2452,6 @@ class KitchenSink(App):
                       "Декабрь"]
         self.num_month = all_months.index(month)
 
-
-
     def next_month(self):
         all_months = ["Unknown",
                       "Январь",
@@ -2478,7 +2485,7 @@ class KitchenSink(App):
         f = str(day) +' '+ str(mounth)+ ' ' + ' ' + str(self.name_year)
         self.main_widget.ids.toolbar.title = str(f)
         self.number_month(mounth)
-        self.datetim = str(self.name_year) + '-' + str(self.num_month) + '-' + str(day)
+        self.datetim = str(day) + '.' + str(self.num_month) + '.' + str(self.name_year)
         print(self.datetim)
 
     def theme_picker_open(self):
@@ -2496,17 +2503,18 @@ class KitchenSink(App):
         self.mycursor.execute("select description from new_schema.new_table;")
         for x in self.mycursor:
             description.append(x)
-        self.mycursor.execute("select datetime from new_schema.new_table;")
+        self.mycursor.execute("select date_time from new_schema.new_table;")
         for x in self.mycursor:
             date.append(x)
-        print(len(description))
+        print(date)
+        #print(len(description))
         self.lenwidget = len(task)
         i = 0
         while i < len(task):
-            print(task[i])
-            print(description[i])
-            m.add_widget(TwoLineListItem(
-                text=str(",".join(task[i])), secondary_text=str(",".join(description[i])))
+            #print(task[i])
+            #print(description[i])
+            m.add_widget(ThreeLineListItem(
+                text=str(",".join(date[i])), secondary_text= str(",".join(task[i])) )
             )
             i = i + 1
         del task[:]
@@ -2532,9 +2540,6 @@ class KitchenSink(App):
                 text=",".join(task[i]), secondary_text='hhh')
             )
             #i = i + 1
-    def open_screen(self):
-        screen = self.main_widget.ids.scr_mngr.get_screen('main_screen')
-        screen.bottom_navigation.open()
 
     def example_add_stack_floating_buttons(self):
         def set_my_language(instance_button):
@@ -2761,6 +2766,14 @@ class KitchenSink(App):
                 text="Задание создано успешно!", events_callback=lambda x: None
             )
         self.alert_dialog1.open()
+
+    def dialog_exeption(self):
+        if not self.alert_dialog2:
+            self.alert_dialog2 = MDDialog(
+                title = 'Ошибка', size_hint=(.8, .4), text_button_ok='Ok',
+                text="Проверьте заполнение всех полей", events_callback=lambda x: None
+            )
+        self.alert_dialog2.open()
 
     def show_example_alert_dialog(self):
         if not self.alert_dialog:
