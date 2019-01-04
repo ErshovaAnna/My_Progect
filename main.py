@@ -32,7 +32,7 @@ from kivymd.bottomsheet import MDListBottomSheet, MDGridBottomSheet
 from kivymd.button import MDIconButton
 from kivymd.date_picker import MDDatePicker
 from kivymd.dialog import MDInputDialog, MDDialog
-from kivymd.list import ILeftBody, ILeftBodyTouch, IRightBodyTouch, MDList, ThreeLineListItem
+from kivymd.list import ILeftBody, ILeftBodyTouch, IRightBodyTouch, MDList, ThreeLineListItem, ThreeLineIconListItem, ThreeLineAvatarIconListItem
 from kivymd.material_resources import DEVICE_TYPE
 from kivymd.selectioncontrols import MDCheckbox
 from kivymd.snackbar import Snackbar
@@ -45,6 +45,7 @@ from kivymd.filemanager import MDFileManager
 from kivymd.progressloader import MDProgressLoader
 from kivymd.stackfloatingbuttons import MDStackFloatingButtons
 from kivymd.useranimationcard import MDUserAnimationCard
+from libs.applibs.swipetodelete import SwipeBehavior
 
 main_widget_kv = """
 #:import Clock kivy.clock.Clock
@@ -91,6 +92,20 @@ main_widget_kv = """
 #:import MDUpdateSpinner kivymd.updatespinner.MDUpdateSpinner
 
 
+<List_Task@BoxLayout>
+    orientation: "vertical"
+    spacing: 5 
+    size_hint_y: None
+    hight: self.minimum_height
+    
+    ThreeLineAvatarIconListItem:
+        text: "Call Viber Out"
+        secondary_text: "ppp"
+        
+        IconLeftSampleWidget:
+            icon: 'phone' 
+        IconRightSampleWidget:       
+       
 <ContentForAnimCard@BoxLayout>:
     orientation: 'vertical'
     padding: dp(10)
@@ -132,7 +147,7 @@ main_widget_kv = """
             % get_hex_from_color(app.theme_cls.primary_color)
         IconLeftSampleWidget:
             icon: 'remote'
-
+   
 
 <ContentNavigationDrawer@MDNavigationDrawer>:
     drawer_logo: './assets/drawer_logo.png'
@@ -609,7 +624,7 @@ NavigationLayout:
                         text: "Задание"
                         icon: 'calendar-check'
                         on_enter: 
-                            app.nnn(k)
+                            app.nnn(k, month_label.text)
                         #on_leave: app.pusto(k)
                                                     
                         ScrollView:
@@ -1835,6 +1850,11 @@ class KitchenSink(App):
              'callback': self.callback_for_menu_items}
             for i in range(15)
         ]
+        self.left_action=[
+            {
+                'icon' : 'sd'
+            }
+        ]
         self.Window = Window
         self.manager = False
         self.md_theme_picker = None
@@ -2493,53 +2513,45 @@ class KitchenSink(App):
             self.md_theme_picker = MDThemePicker()
         self.md_theme_picker.open()
 
-    def nnn(self, m):
+    def nnn(self, m, month):
         task = []
         description = []
         date = []
-        self.mycursor.execute("SELECT name FROM new_schema.new_table;")
+        self.mycursor.execute("SELECT name FROM new_schema.new_table where name_month = %s;", (month,))
         for x in self.mycursor:
             task.append(x)
-        self.mycursor.execute("select description from new_schema.new_table;")
+        self.mycursor.execute("SELECT description FROM new_schema.new_table where name_month = %s;", (month,))
         for x in self.mycursor:
             description.append(x)
-        self.mycursor.execute("select date_time from new_schema.new_table;")
+        self.mycursor.execute( "SELECT date_time FROM new_schema.new_table where name_month = %s;", (month,))
         for x in self.mycursor:
             date.append(x)
-        print(date)
-        #print(len(description))
+
         self.lenwidget = len(task)
         i = 0
         while i < len(task):
-            #print(task[i])
-            #print(description[i])
-            m.add_widget(ThreeLineListItem(
-                text=str(",".join(date[i])), secondary_text= str(",".join(task[i])) )
-            )
+            #m.add_widget(Factory.List_Task)
+            m.add_widget(ThreeLineAvatarIconListItem(
+            #    id = 'task' + str(i),
+
+                text=str(",".join(date[i])),
+                secondary_text= str(",".join(task[i])) + ' ' + \
+                    str(",".join(description[i]))))
+            #print(self.main_widget.ids.id_1[i].text)
+            #print(id_1[i])
+            #print('task' + str(i))
+            #print(self.main_widget.ids.task1.text)
             i = i + 1
+
         del task[:]
         task[:] = []
         del description[:]
         description[:] = []
-        date[:]
+        del date[:]
         date[:] = []
 
     def pusto(self,m):
         m.clear_widgets()
-
-    def day_task(self, m):
-        task = []
-        self.mycursor.execute("SELECT name FROM new_schema.new_table;")
-        for x in self.mycursor:
-            task.append(x)
-        print(len(task))
-        i=0
-        self.lenwidget = len(task)
-        while i < len(task):
-            m.add_widget(TwoLineListItem(
-                text=",".join(task[i]), secondary_text='hhh')
-            )
-            #i = i + 1
 
     def example_add_stack_floating_buttons(self):
         def set_my_language(instance_button):
