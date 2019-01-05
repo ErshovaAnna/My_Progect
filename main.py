@@ -5,6 +5,7 @@ import sys
 import calendar
 import datetime
 import mysql.connector
+import time
 
 sys.path.append(os.path.abspath(__file__).split('demos')[0])
 
@@ -637,7 +638,22 @@ NavigationLayout:
                                 orientation: "vertical"
                                 spacing: 5 
                                 size_hint_y: None
-                                height: self.minimum_height                       
+                                height: self.minimum_height 
+                                
+                                #ThreeLineAvatarIconListItem:
+                                    
+                                #    text:'asdf'
+                                #    secondary_text: 'lkjh'
+                                #    IconRightSampleWidget: 
+                                #        icon: 'comment-text'
+                                #        on_press:
+                                #            app.pri()   
+                                #    IconLeftSampleWidget:
+                                #        id: proverks
+                                #        id: chek
+                                #        on_press:
+                                #            app.prin()
+                                                         
 
                     MDBottomNavigationItem:
                         name: 'bottom_navigation_desktop_1'
@@ -1881,6 +1897,7 @@ class KitchenSink(App):
         self.lenwidget = 0
         self.num_month = 0
         self.datetim = ''
+        self.checked_day = ''
         Window.bind(on_keyboard=self.events)
         self.mycursor = self.mydb.cursor()
 
@@ -1949,19 +1966,25 @@ class KitchenSink(App):
             return self.name_month
 
 
-    def test_insert(self, name, discription, time):
-        if (self.main_widget.ids.name_job.text != '') or (self.main_widget.ids.time_label.text != ''):
-            self.datetim = self.datetim + ' ' + str(time)
+    def test_insert(self, name, discription, time_):
+        ###########################################################
+        time_now = str(datetime.datetime.now().strftime('%H:%M:00'))
+        print(time_now)
+        print(time_)
+        #or time_now < str(time_)
+        ##############################################################
+        if (self.main_widget.ids.name_job.text != '') or (self.main_widget.ids.time_label.text != '') or str(time_) == '' :
+
+            #self.datetim = self.datetim + ' ' + str(time_)
             print(self.datetim)
-            sql = "INSERT INTO new_table(name, description, date_time) VALUES(%s, %s, %s)"
-            val = (name, discription, str(self.datetim))
+            sql = "INSERT INTO new_table(name, description, name_month, year_, time_, day_) VALUES(%s, %s, %s, %s, %s, %s)"
+            val = (name, discription, self.main_widget.ids.month_label.text, self.name_year , str(time_), self.checked_day)
             self.mycursor.execute(sql, val)
             self.mydb.commit()
             self.main_widget.ids.name_job.text = ''
             self.main_widget.ids.time_label.text = ''
             self.main_widget.ids.description.text = ''
             self.main_widget.ids.scr_mngr.get_screen('main_screen')
-
             self.dialog_windofs()
         else:
             self.dialog_exeption()
@@ -1980,7 +2003,7 @@ class KitchenSink(App):
             self.main_widget.ids.toolbar.title = str(self.name_year)
 
     def proverka(self):
-        print(self.main_widget.ids.time_label.text)
+        print(datetime.datetime.now().strftime('%H:%M:00'))
 
     def number_day(self, day_start, day_finish):
         if day_start == 0:
@@ -2501,6 +2524,7 @@ class KitchenSink(App):
             self.number_day(g[0], g[1])
 
     def change_title(self, day, mounth):
+        self.checked_day = str(day)
         print(day,mounth,self.name_year)
         f = str(day) +' '+ str(mounth)+ ' ' + ' ' + str(self.name_year)
         self.main_widget.ids.toolbar.title = str(f)
@@ -2523,24 +2547,29 @@ class KitchenSink(App):
         self.mycursor.execute("SELECT description FROM new_schema.new_table where name_month = %s;", (month,))
         for x in self.mycursor:
             description.append(x)
-        self.mycursor.execute( "SELECT date_time FROM new_schema.new_table where name_month = %s;", (month,))
+        self.mycursor.execute( "SELECT time_ FROM new_schema.new_table where name_month = %s;", (month,))
         for x in self.mycursor:
             date.append(x)
 
         self.lenwidget = len(task)
         i = 0
-        while i < len(task):
-            #m.add_widget(Factory.List_Task)
-            m.add_widget(ThreeLineAvatarIconListItem(
-            #    id = 'task' + str(i),
 
+        #if self.main_widget.ids.proverks.active:
+        #    print('Active')
+        while i < len(task):
+            #m.add_widget(self.main_widget.ids.proverks)
+            #m.add_widget(Factory.List_Task)
+            list = ThreeLineAvatarIconListItem(
                 text=str(",".join(date[i])),
                 secondary_text= str(",".join(task[i])) + ' ' + \
-                    str(",".join(description[i]))))
-            #print(self.main_widget.ids.id_1[i].text)
-            #print(id_1[i])
-            #print('task' + str(i))
-            #print(self.main_widget.ids.task1.text)
+                    str(",".join(description[i])))
+            m.add_widget(list)
+            #m.add_widget(ThreeLineAvatarIconListItem(
+            #    id = 'task' + str(i),
+
+            #    text=str(",".join(date[i])),
+            #    secondary_text= str(",".join(task[i])) + ' ' + \
+            #        str(",".join(description[i]))))
             i = i + 1
 
         del task[:]
@@ -2549,6 +2578,12 @@ class KitchenSink(App):
         description[:] = []
         del date[:]
         date[:] = []
+
+    def prin(self):
+        print('check box is check')
+
+    def pri(self):
+        print('check box2 is check')
 
     def pusto(self,m):
         m.clear_widgets()
@@ -2914,11 +2949,11 @@ class AvatarSampleWidget(ILeftBody, Image):
     pass
 
 
-class IconLeftSampleWidget(ILeftBodyTouch, MDIconButton):
+class IconLeftSampleWidget(ILeftBodyTouch, MDCheckbox):
     pass
 
 
-class IconRightSampleWidget(IRightBodyTouch, MDCheckbox):
+class IconRightSampleWidget(IRightBodyTouch, MDIconButton):
     pass
 
 
