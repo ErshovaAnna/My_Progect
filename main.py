@@ -1968,24 +1968,45 @@ class KitchenSink(App):
 
     def test_insert(self, name, discription, time_):
         ###########################################################
-        time_now = str(datetime.datetime.now().strftime('%H:%M:00'))
-        print(time_now)
-        print(time_)
-        #or time_now < str(time_)
-        ##############################################################
-        if (self.main_widget.ids.name_job.text != '') or (self.main_widget.ids.time_label.text != '') or str(time_) == '' :
 
-            #self.datetim = self.datetim + ' ' + str(time_)
-            print(self.datetim)
-            sql = "INSERT INTO new_table(name, description, name_month, year_, time_, day_) VALUES(%s, %s, %s, %s, %s, %s)"
-            val = (name, discription, self.main_widget.ids.month_label.text, self.name_year , str(time_), self.checked_day)
-            self.mycursor.execute(sql, val)
-            self.mydb.commit()
-            self.main_widget.ids.name_job.text = ''
-            self.main_widget.ids.time_label.text = ''
-            self.main_widget.ids.description.text = ''
-            self.main_widget.ids.scr_mngr.get_screen('main_screen')
-            self.dialog_windofs()
+        all_months = ["Unknown",
+                      "Январь",
+                      "Февраль",
+                      "Март",
+                      "Апрель",
+                      "Май",
+                      "Июнь",
+                      "Июль",
+                      "Август",
+                      "Сентябрь",
+                      "Октябрь",
+                      "Ноябрь",
+                      "Декабрь"]
+        number = all_months.index(self.main_widget.ids.month_label.text)
+
+        time_now = str(datetime.datetime.now().strftime('%H:%M'))
+        year_now = int(datetime.datetime.now().year)
+        day_now = str(datetime.datetime.now().day)
+        full = str(self.checked_day) + '.' + str(number) + '.' + str(self.name_year)
+        print(full)
+
+        if (self.main_widget.ids.name_job.text != '') or (self.main_widget.ids.time_label.text != '') or str(time_) == '':
+            if int(year_now) > int(self.name_year) or int(day_now) >= int(self.checked_day):
+                if int(day_now) == int(self.checked_day) and time_now > time_:
+                    self.dialog_exeption2()
+                else:
+                    self.dialog_exeption2()
+            else:
+                print(self.datetim)
+                sql = "INSERT INTO new_table(name, description, name_month, year_, time_, day_, full_date) VALUES(%s, %s, %s, %s, %s, %s, %s)"
+                val = (name, discription, self.main_widget.ids.month_label.text, self.name_year , str(time_), self.checked_day, full)
+                self.mycursor.execute(sql, val)
+                self.mydb.commit()
+                self.main_widget.ids.name_job.text = ''
+                self.main_widget.ids.time_label.text = ''
+                self.main_widget.ids.description.text = ''
+                self.main_widget.ids.scr_mngr.get_screen('main_screen')
+                self.dialog_windofs()
         else:
             self.dialog_exeption()
 
@@ -2003,6 +2024,9 @@ class KitchenSink(App):
             self.main_widget.ids.toolbar.title = str(self.name_year)
 
     def proverka(self):
+        self.main_widget.ids.name_job.text = ''
+        self.main_widget.ids.time_label.text = ''
+        self.main_widget.ids.description.text = ''
         print(datetime.datetime.now().strftime('%H:%M:00'))
 
     def number_day(self, day_start, day_finish):
@@ -2469,12 +2493,12 @@ class KitchenSink(App):
             self.main_widget.ids.month_label.text = all_months[(all_months.index(self.name_month))]
             self.main_widget.ids.toolbar.title = self.show_year(2)
             self.name_month = all_months[(all_months.index(self.name_month))]
-            # self.name_year = self.name_year - 1
+
             g = calendar.monthrange(self.name_year, all_months.index(self.name_month))
             self.number_day(g[0], g[1])
         else:
             self.main_widget.ids.month_label.text = all_months[(all_months.index(self.name_month)) - 1]
-            # self.main_widget.ids.month_label_1.text = all_months[(all_months.index(self.name_month)) - 1]
+
             self.name_month = all_months[(all_months.index(self.name_month)) - 1]
             g = calendar.monthrange(self.name_year, all_months.index(self.name_month))
             self.number_day(g[0], g[1])
@@ -2524,6 +2548,7 @@ class KitchenSink(App):
             self.number_day(g[0], g[1])
 
     def change_title(self, day, mounth):
+
         self.checked_day = str(day)
         print(day,mounth,self.name_year)
         f = str(day) +' '+ str(mounth)+ ' ' + ' ' + str(self.name_year)
@@ -2538,31 +2563,51 @@ class KitchenSink(App):
         self.md_theme_picker.open()
 
     def nnn(self, m, month):
+        title_ = month + ' ' + str(self.name_year)
+        self.main_widget.ids.toolbar.title = title_
         task = []
         description = []
-        date = []
-        self.mycursor.execute("SELECT name FROM new_schema.new_table where name_month = %s;", (month,))
+        time_ = []
+        day_ = []
+        id_ = []
+        full_date = []
+        self.mycursor.execute("SELECT name FROM new_schema.new_table where name_month = %s ORDER BY  cast(day_ as unsigned);", (month,))
         for x in self.mycursor:
             task.append(x)
-        self.mycursor.execute("SELECT description FROM new_schema.new_table where name_month = %s;", (month,))
+        self.mycursor.execute("SELECT description FROM new_schema.new_table where name_month = %s ORDER BY  cast(day_ as unsigned);", (month,))
         for x in self.mycursor:
             description.append(x)
-        self.mycursor.execute( "SELECT time_ FROM new_schema.new_table where name_month = %s;", (month,))
+        self.mycursor.execute( "SELECT time_ FROM new_schema.new_table where name_month = %s ORDER BY  cast(day_ as unsigned);", (month,))
         for x in self.mycursor:
-            date.append(x)
+            time_.append(x)
+        self.mycursor.execute("SELECT day_ FROM new_schema.new_table where name_month = %s ORDER BY  cast(day_ as unsigned);", (month,))
+        for x in self.mycursor:
+            day_.append(x)
+        self.mycursor.execute("SELECT full_date FROM new_schema.new_table where name_month = %s ORDER BY  cast(day_ as unsigned);", (month,))
+        for x in self.mycursor:
+            full_date.append(x)
+        self.mycursor.execute("SELECT id_1 FROM new_schema.new_table where name_month = %s ORDER BY  cast(day_ as unsigned);",(month,))
+        for x in self.mycursor:
+            id_.append(x)
 
+        #print(",".join(full_date))
         self.lenwidget = len(task)
         i = 0
 
-        #if self.main_widget.ids.proverks.active:
-        #    print('Active')
         while i < len(task):
             #m.add_widget(self.main_widget.ids.proverks)
             #m.add_widget(Factory.List_Task)
+            #revers = str(",".join(full_date[i]))
+            text_up = str(",".join(full_date[i])) + ' ' + str(",".join(time_[i]))
+
             list = ThreeLineAvatarIconListItem(
-                text=str(",".join(date[i])),
+
+                text= text_up,
+                #text = str(full_date[i]),
                 secondary_text= str(",".join(task[i])) + ' ' + \
-                    str(",".join(description[i])))
+                    str(",".join(description[i])),
+                on_press = lambda x: self.dialog_windofs3(text_up)
+            )
             m.add_widget(list)
             #m.add_widget(ThreeLineAvatarIconListItem(
             #    id = 'task' + str(i),
@@ -2576,8 +2621,10 @@ class KitchenSink(App):
         task[:] = []
         del description[:]
         description[:] = []
-        del date[:]
-        date[:] = []
+        del day_[:]
+        day_[:] = []
+        del time_[:]
+        time_[:] = []
 
     def prin(self):
         print('check box is check')
@@ -2587,6 +2634,7 @@ class KitchenSink(App):
 
     def pusto(self,m):
         m.clear_widgets()
+        self.main_widget.ids.toolbar.title = str(self.name_year)
 
     def example_add_stack_floating_buttons(self):
         def set_my_language(instance_button):
@@ -2814,11 +2862,27 @@ class KitchenSink(App):
             )
         self.alert_dialog1.open()
 
+    def dialog_windofs3(self,id):
+        if not self.alert_dialog1:
+            self.alert_dialog1 = MDDialog(
+                title = 'Готово', size_hint=(.8, .4), text_button_ok='Ok',
+                text=id, events_callback=lambda x: None
+            )
+        self.alert_dialog1.open()
+
     def dialog_exeption(self):
         if not self.alert_dialog2:
             self.alert_dialog2 = MDDialog(
                 title = 'Ошибка', size_hint=(.8, .4), text_button_ok='Ok',
                 text="Проверьте заполнение всех полей", events_callback=lambda x: None
+            )
+        self.alert_dialog2.open()
+
+    def dialog_exeption2(self):
+        if not self.alert_dialog2:
+            self.alert_dialog2 = MDDialog(
+                title = 'Ошибка', size_hint=(.8, .4), text_button_ok='Ok',
+                text="Задание можно планировать только на будущее", events_callback=lambda x: None
             )
         self.alert_dialog2.open()
 
