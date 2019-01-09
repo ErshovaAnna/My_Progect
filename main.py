@@ -625,9 +625,11 @@ NavigationLayout:
                         text: "Задание"
                         icon: 'calendar-check'
                         on_enter: 
-                            app.nnn(k, month_label.text)
+                            app.nnn(k, month_label.text,1,31)
                         #on_leave: app.pusto(k)
                                                     
+                        
+                            
                         ScrollView:
                             id: scroll
                             size_hint: 1, 1
@@ -653,6 +655,21 @@ NavigationLayout:
                                 #        id: chek
                                 #        on_press:
                                 #            app.prin()
+                        BoxLayout: 
+                            MDRaisedButton:
+                                text: "Определенный день"
+                                elevation_normal: 2
+                                opposite_colors: True
+                                pos_hint: {'center_x': 0.5, 'center_y': .97}
+                                on_press:
+                                    app.specific_day()
+                            MDRaisedButton:
+                                text: "Скинуть"
+                                elevation_normal: 2
+                                opposite_colors: True
+                                pos_hint: {'center_x': 0.5, 'center_y': .97}
+                                on_press: 
+                                    app.interval_day()
                                                          
 
                     MDBottomNavigationItem:
@@ -1898,19 +1915,30 @@ class KitchenSink(App):
         self.num_month = 0
         self.datetim = ''
         self.checked_day = ''
-        Window.bind(on_keyboard=self.events)
+        self.date_label_year = datetime.datetime.now()
+        self.date_label_day = datetime.datetime.now()
+        self.date_label2_year = datetime.datetime.now()
+        self.date_label2_day = datetime.datetime.now()
+        self.month_label = ''
+
         self.mycursor = self.mydb.cursor()
+        self.date_per = ''
+        self.time_per = ''
+        self.name_per = ''
+        self.description_per = ''
+        Window.bind(on_keyboard=self.events)
 
     def test_conection(self):
 
         #self.mycursor = self.mydb.cursor()
-        task = []
+        taskdate = []
         #self.mycursor.execute("SELECT * FROM new_table")
-        self.mycursor.execute("SELECT name FROM new_schema.new_table;")
+        self.mycursor.execute("SELECT new FROM new_schema.new_table where id_1 = 1;")
         for x in self.mycursor:
-            task.append(x)
-        print(task)
-
+            taskdate.append(str(x))
+        print(taskdate[0])
+        #print(taskdate[0].split(' ', 1)[1])
+        #print(type(taskdate[0]))
 
     def get_string1(self, string1, string2):
         print(string1)
@@ -2562,7 +2590,8 @@ class KitchenSink(App):
             self.md_theme_picker = MDThemePicker()
         self.md_theme_picker.open()
 
-    def nnn(self, m, month):
+    def nnn(self, m, month, q, s):
+        self.month_label = month
         title_ = month + ' ' + str(self.name_year)
         self.main_widget.ids.toolbar.title = title_
         task = []
@@ -2571,50 +2600,36 @@ class KitchenSink(App):
         day_ = []
         id_ = []
         full_date = []
-        self.mycursor.execute("SELECT name FROM new_schema.new_table where name_month = %s ORDER BY  cast(day_ as unsigned);", (month,))
+        self.mycursor.execute("SELECT name FROM new_schema.new_table where name_month = %s and year_ = %s and day_ BETWEEN %s AND %s ORDER BY  cast(day_ as unsigned);", (month,self.name_year,q,s))
         for x in self.mycursor:
             task.append(x)
-        self.mycursor.execute("SELECT description FROM new_schema.new_table where name_month = %s ORDER BY  cast(day_ as unsigned);", (month,))
+        self.mycursor.execute("SELECT description FROM new_schema.new_table where name_month = %s and year_ = %s and day_ BETWEEN %s AND %s ORDER BY  cast(day_ as unsigned);", (month,self.name_year,q,s))
         for x in self.mycursor:
             description.append(x)
-        self.mycursor.execute( "SELECT time_ FROM new_schema.new_table where name_month = %s ORDER BY  cast(day_ as unsigned);", (month,))
+        self.mycursor.execute( "SELECT time_ FROM new_schema.new_table where name_month = %s and year_ = %s and day_ BETWEEN %s AND %s ORDER BY  cast(day_ as unsigned);", (month,self.name_year,q,s))
         for x in self.mycursor:
             time_.append(x)
-        self.mycursor.execute("SELECT day_ FROM new_schema.new_table where name_month = %s ORDER BY  cast(day_ as unsigned);", (month,))
+        self.mycursor.execute("SELECT day_ FROM new_schema.new_table where name_month = %s and year_ = %s and day_ BETWEEN %s AND %s ORDER BY  cast(day_ as unsigned);", (month,self.name_year,q,s))
         for x in self.mycursor:
             day_.append(x)
-        self.mycursor.execute("SELECT full_date FROM new_schema.new_table where name_month = %s ORDER BY  cast(day_ as unsigned);", (month,))
+        self.mycursor.execute("SELECT full_date FROM new_schema.new_table where name_month = %s and year_ = %s and day_ BETWEEN %s AND %s ORDER BY  cast(day_ as unsigned);", (month,self.name_year,q,s))
         for x in self.mycursor:
             full_date.append(x)
-        self.mycursor.execute("SELECT id_1 FROM new_schema.new_table where name_month = %s ORDER BY  cast(day_ as unsigned);",(month,))
+        self.mycursor.execute("SELECT id_1 FROM new_schema.new_table where name_month = %s and year_ = %s and day_ BETWEEN %s AND %s ORDER BY  cast(day_ as unsigned);",(month,self.name_year,q,s))
         for x in self.mycursor:
             id_.append(x)
 
-        #print(",".join(full_date))
-        self.lenwidget = len(task)
         i = 0
 
         while i < len(task):
-            #m.add_widget(self.main_widget.ids.proverks)
-            #m.add_widget(Factory.List_Task)
-            #revers = str(",".join(full_date[i]))
             text_up = str(",".join(full_date[i])) + ' ' + str(",".join(time_[i]))
-
             list = ThreeLineAvatarIconListItem(
-
                 text= text_up,
-                #text = str(full_date[i]),
                 secondary_text= str(",".join(task[i])) + ' ' + \
                     str(",".join(description[i])),
-                on_press = lambda x: self.dialog_windofs3(text_up)
+                on_release = lambda x: self.dialog_windofs3(self)
             )
             m.add_widget(list)
-            #m.add_widget(ThreeLineAvatarIconListItem(
-            #    id = 'task' + str(i),
-
-            #    text=str(",".join(date[i])),
-            #    secondary_text= str(",".join(task[i])) + ' ' + \
-            #        str(",".join(description[i]))))
             i = i + 1
 
         del task[:]
@@ -2626,11 +2641,24 @@ class KitchenSink(App):
         del time_[:]
         time_[:] = []
 
-    def prin(self):
-        print('check box is check')
+    def specific_day(self):
+        MDDatePicker(self.set_previous_date1).open()
 
-    def pri(self):
-        print('check box2 is check')
+    def set_previous_date1(self, date_obj):
+        self.date_label = date_obj
+        self.date_label_day = self.date_label.day
+        self.date_label_day = self.date_label.year
+        self.pusto(self.main_widget.ids.k)
+        self.nnn(self.main_widget.ids.k, self.month_label, str(self.date_label.day), str(self.date_label.day))
+
+
+    def interval_day(self):
+        self.pusto(self.main_widget.ids.k)
+        self.nnn(self.main_widget.ids.k, self.month_label, 1,31)
+
+    def set_previous_date(self, date_obj):
+        self.previous_date = date_obj
+        self.date_label = str(date_obj)
 
     def pusto(self,m):
         m.clear_widgets()
@@ -2862,13 +2890,21 @@ class KitchenSink(App):
             )
         self.alert_dialog1.open()
 
-    def dialog_windofs3(self,id):
-        if not self.alert_dialog1:
-            self.alert_dialog1 = MDDialog(
-                title = 'Готово', size_hint=(.8, .4), text_button_ok='Ok',
-                text=id, events_callback=lambda x: None
-            )
-        self.alert_dialog1.open()
+    def dialog_windofs3(self,widget):
+        #widget.is_selected = True
+        #print(widget.text)
+        if not self.ok_cancel_dialog:
+            self.ok_cancel_dialog = MDDialog(
+                title='Выбор', size_hint=(.8, .4), text_button_ok='Удалить',
+                text="Выберите действие", text_button_cancel='Перенести',
+                events_callback = self.callback)
+        self.ok_cancel_dialog.open()
+
+    def callback(self, text_item):
+        if text_item == 'Удалить':
+            print('Удалить')
+        if text_item == 'Перенести':
+            print('Перенести')
 
     def dialog_exeption(self):
         if not self.alert_dialog2:
@@ -2903,6 +2939,7 @@ class KitchenSink(App):
                 events_callback=self.callback_for_menu_items)
         self.ok_cancel_dialog.open()
 
+
     def show_example_long_dialog(self):
         if not self.long_dialog:
             self.long_dialog = MDDialog(
@@ -2934,20 +2971,10 @@ class KitchenSink(App):
                 pass
         time_dialog.open()
 
-    def set_previous_date(self, date_obj):
-        self.previous_date = date_obj
-        self.root.ids.date_picker_label.text = str(date_obj)
+
 
     def show_example_date_picker(self):
-        if self.root.ids.date_picker_use_previous_date.active:
-            pd = self.previous_date
-            try:
-                MDDatePicker(self.set_previous_date,
-                             pd.year, pd.month, pd.day).open()
-            except AttributeError:
-                MDDatePicker(self.set_previous_date).open()
-        else:
-            MDDatePicker(self.set_previous_date).open()
+        MDDatePicker(self.set_previous_date).open()
 
     def show_example_bottom_sheet(self):
         if not self.bs_menu_1:
