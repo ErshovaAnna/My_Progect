@@ -6,6 +6,7 @@ import calendar
 import datetime
 import mysql.connector
 import time
+import atexit
 
 sys.path.append(os.path.abspath(__file__).split('demos')[0])
 
@@ -18,6 +19,8 @@ if platform in ('linux', 'macosx', 'windows'):
     Config.set('graphics', 'width', '200')
     Config.set('graphics', 'height', '200')
 
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.blocking import BlockingScheduler
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -28,6 +31,7 @@ from kivy.uix.image import Image
 from kivy.uix.modalview import ModalView
 from kivy.utils import get_hex_from_color
 from kivy.graphics import *
+from kivy.uix.textinput import TextInput
 
 from kivymd.bottomsheet import MDListBottomSheet, MDGridBottomSheet
 from kivymd.button import MDIconButton
@@ -46,6 +50,7 @@ from kivymd.filemanager import MDFileManager
 from kivymd.progressloader import MDProgressLoader
 from kivymd.stackfloatingbuttons import MDStackFloatingButtons
 from kivymd.useranimationcard import MDUserAnimationCard
+
 from libs.applibs.swipetodelete import SwipeBehavior
 
 main_widget_kv = """
@@ -283,6 +288,7 @@ NavigationLayout:
 
             Screen:
                 name: 'main_screen'
+                
                 MDBottomNavigation:
                     id: bottom_navigation_demo
 
@@ -290,7 +296,9 @@ NavigationLayout:
                         name: 'octagon'
                         text: "Месяц"
                         icon: "home-outline"
-                        on_enter: app.pusto(k)
+                        on_enter: 
+                            app.pusto(k)
+                            #app.start_screen()
                         #on_enter: app.add_cards(grid_card_1)
                         
                         BoxLayout:
@@ -627,12 +635,10 @@ NavigationLayout:
                         on_enter: 
                             app.nnn(k, month_label.text,1,31)
                         #on_leave: app.pusto(k)
-                                                    
                         
-                            
                         ScrollView:
                             id: scroll
-                            size_hint: 1, 1
+                            size_hint: 1, .97
                             do_scroll_x: False
 
                             BoxLayout:
@@ -680,14 +686,31 @@ NavigationLayout:
                         on_enter:
                             app.pusto(k) 
                             app.test_conection()
-                            #app.test_insert()
-                        BoxLayout:
-                            orientation: 'vertical'
-                            size_hint_y: None
-                            padding: dp(48)
-                            spacing: 10
-                            MDTextField:
-                                hint_text: "Hello again"
+                            app.print_date_time()
+                            
+                        TextInput:
+                            id: note
+                            size_hint: 1,1
+                            text: 'tratatatatatatata'
+                                #hint_text: "Hello again"
+                        
+                        MDFloatingActionButton:
+                            icon: 'check'
+                            opposite_colors: True
+                            elevation_normal: 8
+                            md_bg_color: app.theme_cls.primary_color
+                            pos_hint: {'center_x': .75, 'center_y': .55}
+                            on_press: 
+                                app.test_insert_note()
+                        MDFloatingActionButton:
+                            icon: 'plus'
+                            opposite_colors: True
+                            elevation_normal: 8
+                            md_bg_color: app.theme_cls.primary_color
+                            pos_hint: {'center_x': .65, 'center_y': .55}
+                            on_press: 
+                                app.test_select_note()
+                        
                
             ###################################################################
             #
@@ -1866,8 +1889,13 @@ class KitchenSink(App):
     theme_cls.primary_palette = 'Blue'
     previous_date = ObjectProperty()
 
+
     def __init__(self, **kwargs):
         super(KitchenSink, self).__init__(**kwargs)
+
+        #sched = BackgroundScheduler()
+        #sched.add_job(self.print_date_time, 'interval', seconds =30)
+        #sched.start()
 
         self.mydb = mysql.connector.connect(
             host="127.0.0.1",
@@ -1920,33 +1948,78 @@ class KitchenSink(App):
         self.date_label2_year = datetime.datetime.now()
         self.date_label2_day = datetime.datetime.now()
         self.month_label = ''
+        self.number2 = ''
 
         self.mycursor = self.mydb.cursor()
-        self.date_per = ''
-        self.time_per = ''
-        self.name_per = ''
-        self.description_per = ''
         Window.bind(on_keyboard=self.events)
+
+    def print_date_time(self):
+        all_months = ["Unknown",
+                      "Январь",
+                      "Февраль",
+                      "Март",
+                      "Апрель",
+                      "Май",
+                      "Июнь",
+                      "Июль",
+                      "Август",
+                      "Сентябрь",
+                      "Октябрь",
+                      "Ноябрь",
+                      "Декабрь"]
+        month_now = all_months[int(datetime.datetime.now().month)]
+
+        time_now = []
+        time_now.append(str(datetime.datetime.now().strftime('%H:%M:00')))
+        id_=[]
+        time_=[]
+        num = 0
+        print('month_now' + ' ' + month_now)
+        day_now = str(datetime.datetime.now().day)
+        print('day_now' + ' ' +day_now)
+        self.mycursor.execute("select count(time_) FROM new_schema.new_table where name_month = %s and day_ = %s;", (month_now, day_now))
+        for x in self.mycursor:
+            num = x
+        print(num)
+        if num != 0:
+            print('task have')
+            self.mycursor.execute("SELECT id_1 FROM new_schema.new_table where name_month = %s and day_ = %s;", (month_now, day_now))
+            for x in self.mycursor:
+                id_.append(str(x))
+            self.mycursor.execute("SELECT time_ FROM new_schema.new_table where name_month = 'Январь' and day_ = 10;")
+            for x in self.mycursor:
+                time_.append(str(x))
+                time_now.append(str(datetime.datetime.now().strftime('%H:%M:00')))
+            i=0
+
+            print('time in db ' + time_[3])
+            #self.main_widget.ids.text.text = str(''.join(time_[3]))
+            print('time now ' + time_now[3])
+            if (str(''.join(time_[3])))>time_now[0]:
+                print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+            while i < len(time_):
+                print('loop not now')
+                if time_now[0] == str(','.join(time_[3])):
+                    print("it's work!!!!!!!!!!")
+                i = i+1
+        else:
+            print("На сегодня дел нет")
+
+
 
     def test_conection(self):
 
-        #self.mycursor = self.mydb.cursor()
         taskdate = []
-        #self.mycursor.execute("SELECT * FROM new_table")
         self.mycursor.execute("SELECT new FROM new_schema.new_table where id_1 = 1;")
         for x in self.mycursor:
             taskdate.append(str(x))
         print(taskdate[0])
-        #print(taskdate[0].split(' ', 1)[1])
-        #print(type(taskdate[0]))
 
     def get_string1(self, string1, string2):
         print(string1)
         print(string2)
         self.name_name = str(string1)
         self.name_discription = str(string2)
-        #self.main_widget.ids.day_label.text = str(string1)
-        #self.main_widget.ids.day_label.secondary_text = str(string2)
 
     def get_time_picker_data(self, instance, time):
         self.root.ids.time_label.text = str(time)
@@ -1993,10 +2066,21 @@ class KitchenSink(App):
             self.name_month = 'Декабрь'
             return self.name_month
 
+    def test_insert_note(self):
+        sql = "INSERT INTO new_table(name, new) VALUES(%s, %s)"
+        val = ('Записка',str(self.main_widget.ids.note.text))
+        self.mycursor.execute(sql, val)
+        self.mydb.commit()
+
+    def test_select_note(self):
+        name_note = []
+        self.mycursor.execute("SELECT new FROM new_schema.new_table where name = %s;",("Записка"))
+        for x in self.mycursor:
+            name_note.append(x)
+        self.main_widget.ids.note.text = name_note[1]
 
     def test_insert(self, name, discription, time_):
-        ###########################################################
-
+        month_now = str(datetime.datetime.now().month)
         all_months = ["Unknown",
                       "Январь",
                       "Февраль",
@@ -2010,22 +2094,42 @@ class KitchenSink(App):
                       "Октябрь",
                       "Ноябрь",
                       "Декабрь"]
-        number = all_months.index(self.main_widget.ids.month_label.text)
+        self.number2 = all_months[int(month_now)]
+        number = all_months.index(self.name_month)
 
-        time_now = str(datetime.datetime.now().strftime('%H:%M'))
+        time_now = str(datetime.datetime.now().strftime('%H:%M:00'))
         year_now = int(datetime.datetime.now().year)
         day_now = str(datetime.datetime.now().day)
+
+
+
+        print(time_now)
+        print(time_)
+
+        print(self.main_widget.ids.month_label.text)
         full = str(self.checked_day) + '.' + str(number) + '.' + str(self.name_year)
-        print(full)
+        #print(full)
+
+        #and time_now > time_ and year_now == str(self.name_year) and self.main_widget.ids.month_label.text == number2:
 
         if (self.main_widget.ids.name_job.text != '') or (self.main_widget.ids.time_label.text != '') or str(time_) == '':
-            if int(year_now) > int(self.name_year) or int(day_now) >= int(self.checked_day):
-                if int(day_now) == int(self.checked_day) and time_now > time_:
+            if int(self.name_year)>=2018:
+                print('2019>2018')
+                if int(day_now) > int(self.checked_day) and self.number2 == self.main_widget.ids.month_label.text and time_now > time_:
                     self.dialog_exeption2()
+                    print('09>08')
                 else:
-                    self.dialog_exeption2()
+                    sql = "INSERT INTO new_table(name, description, name_month, year_, time_, day_, full_date) VALUES(%s, %s, %s, %s, %s, %s, %s)"
+                    val = (name, discription, self.main_widget.ids.month_label.text, self.name_year, str(time_), self.checked_day,full)
+                    self.mycursor.execute(sql, val)
+                    self.mydb.commit()
+                    self.main_widget.ids.name_job.text = ''
+                    self.main_widget.ids.time_label.text = ''
+                    self.main_widget.ids.description.text = ''
+                    self.main_widget.ids.scr_mngr.get_screen('main_screen')
+                    self.dialog_windofs()
             else:
-                print(self.datetim)
+                #print(self.datetim)
                 sql = "INSERT INTO new_table(name, description, name_month, year_, time_, day_, full_date) VALUES(%s, %s, %s, %s, %s, %s, %s)"
                 val = (name, discription, self.main_widget.ids.month_label.text, self.name_year , str(time_), self.checked_day, full)
                 self.mycursor.execute(sql, val)
@@ -2619,17 +2723,21 @@ class KitchenSink(App):
         for x in self.mycursor:
             id_.append(x)
 
+        print (time_)
         i = 0
 
         while i < len(task):
             text_up = str(",".join(full_date[i])) + ' ' + str(",".join(time_[i]))
-            list = ThreeLineAvatarIconListItem(
+            list = (ThreeLineAvatarIconListItem(
                 text= text_up,
                 secondary_text= str(",".join(task[i])) + ' ' + \
                     str(",".join(description[i])),
-                on_release = lambda x: self.dialog_windofs3(self)
-            )
+                on_release= lambda x: self.print_task
+                #on_release = lambda x: self.dialog_windofs3(self)
+            ))
             m.add_widget(list)
+            list.add_widget(IconLeftSampleWidget())
+            list.add_widget(IconRightSampleWidget(icon = 'basket-fill', on_release = lambda x: self.print_task(list.secondary_text)))
             i = i + 1
 
         del task[:]
@@ -2640,6 +2748,9 @@ class KitchenSink(App):
         day_[:] = []
         del time_[:]
         time_[:] = []
+
+    def print_task(self, task):
+        print(task)
 
     def specific_day(self):
         MDDatePicker(self.set_previous_date1).open()
@@ -2724,6 +2835,7 @@ class KitchenSink(App):
     def download_complete(self):
         self.set_chevron_back_screen()
         toast('Done')
+
 
     def file_manager_open(self):
         def file_manager_open(text_item):
