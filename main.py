@@ -1985,30 +1985,26 @@ class KitchenSink(App):
         id_=[]
         time_=[]
         num = 0
-        print('month_now' + ' ' + month_now)
         day_now = str(datetime.datetime.now().day)
-        print('day_now' + ' ' +day_now)
         self.mycursor.execute("select count(time_) FROM new_schema.new_table where name_month = %s and day_ = %s;", (month_now, day_now))
         for x in self.mycursor:
             num = str(x)
-        print('num:')
-        print(num[1:-2])
+
         if num[1:-2] != '0':
             print('task have')
             self.mycursor.execute("SELECT id_1 FROM new_schema.new_table where name_month = %s and day_ = %s;", (month_now, day_now))
             for x in self.mycursor:
                 id_.append(str(x))
-            self.mycursor.execute("SELECT time_ FROM new_schema.new_table where name_month = 'Январь' and day_ = 15;")
+            self.mycursor.execute("SELECT time_ FROM new_schema.new_table where name_month = %s and day_ = %s;", (month_now, day_now))
             for x in self.mycursor:
                 time_.append(str(x))
-                time_now.append(str(datetime.datetime.now().strftime('%H:%M:00')))
+
             i=0
 
             while i < len(time_):
-                print('loop not now')
                 print(time_[i][2:-3])
-                if time_now[3] == time_[i][2:-3]:
-                    print(time_now[3] + '>' + time_[i][2:-3])
+                if time_now[0] == time_[i][2:-3]:
+                    print(time_now[0] + '>' + time_[i][2:-3])
                 i = i+1
         else:
             print("На сегодня дел нет")
