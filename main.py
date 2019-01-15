@@ -32,6 +32,8 @@ from kivy.uix.modalview import ModalView
 from kivy.utils import get_hex_from_color
 from kivy.graphics import *
 from kivy.uix.textinput import TextInput
+from kivy.uix.recycleview import RecycleView
+from kivy.uix.recycleboxlayout import RecycleBoxLayout
 
 from kivymd.bottomsheet import MDListBottomSheet, MDGridBottomSheet
 from kivymd.button import MDIconButton
@@ -663,6 +665,7 @@ NavigationLayout:
                                 #            app.prin()
                         BoxLayout: 
                             MDRaisedButton:
+                                id: afs
                                 text: "Определенный день"
                                 elevation_normal: 2
                                 opposite_colors: True
@@ -687,11 +690,16 @@ NavigationLayout:
                             app.pusto(k) 
                             app.test_conection()
                             app.print_date_time()
+                            #app.insert_note_re_v(n)
                             
-                        TextInput:
-                            id: note
-                            size_hint: 1,1
-                            text: 'tratatatatatatata'
+                        GridLayout:
+                            id: n
+                            cols: 2
+                        
+                        #TextInput:
+                        #    id: note
+                        #    size_hint: 1,1
+                        #    text: 'tratatatatatatata'
                                 #hint_text: "Hello again"
                         
                         MDFloatingActionButton:
@@ -702,14 +710,16 @@ NavigationLayout:
                             pos_hint: {'center_x': .75, 'center_y': .55}
                             on_press: 
                                 app.test_insert_note()
+                                
                         MDFloatingActionButton:
                             icon: 'plus'
                             opposite_colors: True
                             elevation_normal: 8
                             md_bg_color: app.theme_cls.primary_color
-                            pos_hint: {'center_x': .65, 'center_y': .55}
+                            pos_hint: {'center_x': .95, 'center_y': .1}
                             on_press: 
                                 app.test_select_note()
+                                app.insert_note()
                         
                
             ###################################################################
@@ -1949,6 +1959,7 @@ class KitchenSink(App):
         self.date_label2_day = datetime.datetime.now()
         self.month_label = ''
         self.number2 = ''
+        self.peredstr = []
 
         self.mycursor = self.mydb.cursor()
         Window.bind(on_keyboard=self.events)
@@ -1979,28 +1990,25 @@ class KitchenSink(App):
         print('day_now' + ' ' +day_now)
         self.mycursor.execute("select count(time_) FROM new_schema.new_table where name_month = %s and day_ = %s;", (month_now, day_now))
         for x in self.mycursor:
-            num = x
-        print(num)
-        if num != 0:
+            num = str(x)
+        print('num:')
+        print(num[1:-2])
+        if num[1:-2] != '0':
             print('task have')
             self.mycursor.execute("SELECT id_1 FROM new_schema.new_table where name_month = %s and day_ = %s;", (month_now, day_now))
             for x in self.mycursor:
                 id_.append(str(x))
-            self.mycursor.execute("SELECT time_ FROM new_schema.new_table where name_month = 'Январь' and day_ = 10;")
+            self.mycursor.execute("SELECT time_ FROM new_schema.new_table where name_month = 'Январь' and day_ = 15;")
             for x in self.mycursor:
                 time_.append(str(x))
                 time_now.append(str(datetime.datetime.now().strftime('%H:%M:00')))
             i=0
 
-            print('time in db ' + time_[3])
-            #self.main_widget.ids.text.text = str(''.join(time_[3]))
-            print('time now ' + time_now[3])
-            if (str(''.join(time_[3])))>time_now[0]:
-                print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
             while i < len(time_):
                 print('loop not now')
-                if time_now[0] == str(','.join(time_[3])):
-                    print("it's work!!!!!!!!!!")
+                print(time_[i][2:-3])
+                if time_now[3] == time_[i][2:-3]:
+                    print(time_now[3] + '>' + time_[i][2:-3])
                 i = i+1
         else:
             print("На сегодня дел нет")
@@ -2074,10 +2082,11 @@ class KitchenSink(App):
 
     def test_select_note(self):
         name_note = []
-        self.mycursor.execute("SELECT new FROM new_schema.new_table where name = %s;",("Записка"))
+        self.mycursor.execute("SELECT new FROM new_schema.new_table where name = 'Записка';")
         for x in self.mycursor:
             name_note.append(x)
-        self.main_widget.ids.note.text = name_note[1]
+        #print(name_note)
+        self.main_widget.ids.note.text = str(name_note[1])
 
     def test_insert(self, name, discription, time_):
         month_now = str(datetime.datetime.now().month)
@@ -2694,6 +2703,17 @@ class KitchenSink(App):
             self.md_theme_picker = MDThemePicker()
         self.md_theme_picker.open()
 
+    def insert_note_re_v(self,h):
+        note = []
+        self.mycursor.execute("SELECT note_text FROM new_schema.new_table2")
+        for x in self.mycursor:
+            note.append(x)
+        i=0
+        while i < len(note):
+            r = RecycleBoxLayout.data(text = note[i])
+            h.add_widget(r)
+            i=i+1
+
     def nnn(self, m, month, q, s):
         self.month_label = month
         title_ = month + ' ' + str(self.name_year)
@@ -2725,20 +2745,43 @@ class KitchenSink(App):
 
         print (time_)
         i = 0
+        mas = []
 
         while i < len(task):
             text_up = str(",".join(full_date[i])) + ' ' + str(",".join(time_[i]))
+            id__ = 'b' + str(i)
             list = (ThreeLineAvatarIconListItem(
-                text= text_up,
-                secondary_text= str(",".join(task[i])) + ' ' + \
-                    str(",".join(description[i])),
-                on_release= lambda x: self.print_task
-                #on_release = lambda x: self.dialog_windofs3(self)
+                id = id__,
+                text=text_up,
+                secondary_text=str(",".join(task[i])) + ' ' + \
+                               str(",".join(description[i])),
+                on_press=lambda x: self.print_task(list.text)
+
+                # on_release = lambda x: self.dialog_windofs3(self)
             ))
-            m.add_widget(list)
-            list.add_widget(IconLeftSampleWidget())
-            list.add_widget(IconRightSampleWidget(icon = 'basket-fill', on_release = lambda x: self.print_task(list.secondary_text)))
+            mas.append(list)
+            print(mas[i])
+            i=i+1
+
+        i=0
+        while i < len(task):###СДЕЛАТЬ ДРУГОЙ ЦИКЛ
+            mdlist = MDList()
+            m.add_widget(mdlist)
+#on_checkbox_active = lambda x: self.print_task(list.text)
+            mdlist.add_widget(mas[i],index = i)
+            mas[i].add_widget(IconLeftSampleWidget(id = 'che',active = False))
+            mas[i].add_widget(IconRightSampleWidget(icon = 'basket-fill', on_release = lambda x: self.print_task(mas[0].text)))###СДЕЛАТЬ ДРУГОЙ ЦИКЛ
+            print(mas[i].id)
+            #if self.main_widget.ids.che.active == True:
+            #    print('true')
             i = i + 1
+
+        #self.main_widget.ids.b10.on_press = lambda x: self.print_task(mas[i].text)
+        #if self.main_widget.ids.che.active == true:
+        #    print('task')
+        #df = ['afs','sd','po']
+        #print(df[0])
+        #print(self.main_widget.ids.asf.text)
 
         del task[:]
         task[:] = []
@@ -2749,8 +2792,16 @@ class KitchenSink(App):
         del time_[:]
         time_[:] = []
 
-    def print_task(self, task):
-        print(task)
+    #def print_task(self, task):
+    #    caller = self.main_widget
+    #    print(caller.)
+
+
+    def print_task(self, event):
+        #self.peredstr.append(event)
+        print(event)
+        #event.widget.config(text="Thank you!")
+        #print(self.peredstr)
 
     def specific_day(self):
         MDDatePicker(self.set_previous_date1).open()
