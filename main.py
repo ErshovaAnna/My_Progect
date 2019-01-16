@@ -1974,7 +1974,8 @@ class KitchenSink(App):
         self.peredstr = []
         self.task_id = ''
         self.mas = []
-
+        self.day_ot = ''
+        self.day_do = ''
 
         self.mycursor = self.mydb.cursor()
         Window.bind(on_keyboard=self.events)
@@ -2727,6 +2728,8 @@ class KitchenSink(App):
             i=i+1
 
     def nnn(self, m, month, q, s):
+        self.day_ot = q
+        self.day_do = s
         del self.mas[:]
         self.mas[:] = []
         self.month_label = month
@@ -2823,13 +2826,14 @@ class KitchenSink(App):
         if self.main_widget.ids.text_del_id.text.isdigit() == True:
 
             print(self.mas[int(self.main_widget.ids.text_del_id.text)].id)
-            a = self.mas[int(self.main_widget.ids.text_del_id.text)].id
-            sql = "DELETE FROM new_schema.new_table WHERE id_1 = %s"
-            adr = (a,)
-
-            #self.mycursor.execute(sql, adr)
-
-            #self.mydb.commit()
+            a = self.mas[int(self.main_widget.ids.text_del_id.text)].id[1:-2]
+            sql1 = "DELETE FROM new_schema.new_table WHERE id_1 = " + a + ";"
+            adr = ()
+            self.mycursor.execute(sql1,adr)
+            self.mydb.commit()
+            self.pusto(self.main_widget.ids.k)
+            self.nnn(self.main_widget.ids.k, self.month_label, self.day_ot,self.day_do)
+            self.main_widget.ids.text_del_id.text = ''
             #print(self.main_widget.ids.text_del_id.text)
 
 
@@ -3124,8 +3128,8 @@ class KitchenSink(App):
         print(self.task_id[1:-2])
         a = str(self.task_id[1:-2])
         if text_item == 'Сделано':
-            sql = "UPDATE new_schema.new_table SET status_ = 'Выполнено' WHERE (id_1 = %s);"
-            val = (a,)
+            sql = "UPDATE new_schema.new_table SET status_ = 'Выполнено' WHERE id_1 =  " + a + ";"
+            val = ()
             self.mycursor.execute(sql, val)
             self.mydb.commit()
             print('Удалить')
