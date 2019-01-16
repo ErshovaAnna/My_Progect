@@ -1976,7 +1976,7 @@ class KitchenSink(App):
         self.mas = []
         self.day_ot = ''
         self.day_do = ''
-
+        self.global_id_update = ''
         self.mycursor = self.mydb.cursor()
         Window.bind(on_keyboard=self.events)
 
@@ -3072,15 +3072,6 @@ class KitchenSink(App):
         self.alert_dialog1.open()
 
 
-    def dialog_windofs3(self,widget):
-
-        if not self.ok_cancel_dialog:
-            self.ok_cancel_dialog = MDDialog(
-                title='Выбор', size_hint=(.8, .4), text_button_ok='Удалить',
-                text="Выберите действие", text_button_cancel='Перенести',
-                events_callback = self.callback)
-        self.ok_cancel_dialog.open()
-
     def dialog_done(self, task):
         self.task_id = task
         a = task[1:-2]
@@ -3100,7 +3091,7 @@ class KitchenSink(App):
         all[:]=[]
 
     def callback(self, text_item):
-
+        self.global_id_update = text_item
         print(self.task_id[1:-2])
         a = str(self.task_id[1:-2])
         if text_item == 'Сделано':
@@ -3111,7 +3102,41 @@ class KitchenSink(App):
             self.pusto(self.main_widget.ids.k)
             self.nnn(self.main_widget.ids.k, self.month_label, self.day_ot, self.day_do)
         if text_item == 'Перенести':
-            print('Перенести')
+            MDDatePicker(self.set_previous_date2).open()
+
+    def set_previous_date2(self, date_obj):
+        a = str(self.task_id[1:-2])
+        print(date_obj)
+
+        date_l_day = date_obj.day
+        date_l_month = date_obj.month
+        date_l_year = date_obj.year
+        print(date_l_year)
+        print(date_l_day)
+        print(date_l_month)
+        all_months = ["Unknown",
+                      "Январь",
+                      "Февраль",
+                      "Март",
+                      "Апрель",
+                      "Май",
+                      "Июнь",
+                      "Июль",
+                      "Август",
+                      "Сентябрь",
+                      "Октябрь",
+                      "Ноябрь",
+                      "Декабрь"]
+        month_now = all_months[date_l_month]
+        full = str(str(date_l_day) + '.' + str(date_l_month) + '.' + str(date_l_year))
+        sql = "UPDATE new_schema.new_table SET day_ = " + str(date_l_day) + " and month_now = " + str(month_now) + " and year_ = " + str(date_l_year) + " and full_date = " + str(full) + " WHERE id_1 =  " + a + ";"
+        #sql = "UPDATE new_schema.new_table SET day_ = %s and name_month = %s and year_ = %s  and full_date = %s WHERE id_1 =  " + a + ";"
+        val = ()
+        print(str(date_l_day), str(month_now),str(date_l_year), full)
+        self.mycursor.execute(sql, val)
+        self.mydb.commit()
+        self.pusto(self.main_widget.ids.k)
+        self.nnn(self.main_widget.ids.k, self.month_label, self.day_ot, self.day_do)
 
     def dialog_exeption(self):
         if not self.alert_dialog2:
