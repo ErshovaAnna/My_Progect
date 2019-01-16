@@ -364,7 +364,7 @@ NavigationLayout:
                                         theme_text_color: 'Error'
                                     MDTextButton:
                                         id: textButton_1
-                                        text: "1"
+                                        text: ""
                                         font_size: dp(25)
                                         canvas: 
                                         on_press: 
@@ -373,7 +373,7 @@ NavigationLayout:
                                            
                                     MDTextButton:
                                         id: textButton_2
-                                        text: "2"
+                                        text: "1"
                                         font_size: dp(25)
                                         on_press: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
@@ -381,28 +381,28 @@ NavigationLayout:
                                             
                                     MDTextButton:
                                         id: textButton_3
-                                        text: "3"
+                                        text: "2"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_3.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_4
-                                        text: "4"
+                                        text: "3"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_4.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_5
-                                        text: "5"
+                                        text: "4"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_5.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_6
-                                        text: "6"
+                                        text: "5"
                                         font_size: dp(25) 
                                         opposite_colors: True
                                         theme_text_color: 'Error'
@@ -411,7 +411,7 @@ NavigationLayout:
                                             app.change_title(textButton_6.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_7
-                                        text: "7"
+                                        text: "6"
                                         font_size: dp(25)
                                         opposite_colors: False
                                         theme_text_color: 'Error'
@@ -420,175 +420,175 @@ NavigationLayout:
                                             app.change_title(textButton_7.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_8
-                                        text: "8"
+                                        text: "7"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_8.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_9
-                                        text: "9"
+                                        text: "8"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_9.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_10
-                                        text: "10"
+                                        text: "9"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_10.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_11
-                                        text: "11"
+                                        text: "10"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_11.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_12
-                                        text: "12"
+                                        text: "11"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_12.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_13
-                                        text: "13"
+                                        text: "12"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_13.text,month_label.text) 
                                     MDTextButton:
                                         id: textButton_14
-                                        text: "14"
+                                        text: "13"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_14.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_15
-                                        text: "15"
+                                        text: "14"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_15.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_16
-                                        text: "16"
+                                        text: "15"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_16.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_17
-                                        text: "17"
+                                        text: "16"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_17.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_18
-                                        text: "18"
+                                        text: "17"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_18.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_19
-                                        text: "19"
+                                        text: "18"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_19.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_20
-                                        text: "20"
+                                        text: "19"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_20.text,month_label.text) 
                                     MDTextButton:
                                         id: textButton_21
-                                        text: "21"
+                                        text: "20"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_21.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_22
-                                        text: "22"
+                                        text: "21"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_22.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_23
-                                        text: "23"
+                                        text: "22"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_23.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_24
-                                        text: "24"
+                                        text: "23"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_24.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_25
-                                        text: "25"
+                                        text: "24"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_25.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_26
-                                        text: "26"
+                                        text: "25"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_26.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_27
-                                        text: "27"
+                                        text: "26"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_27.text,month_label.text) 
                                     MDTextButton:
                                         id: textButton_28
-                                        text: "28"
+                                        text: "27"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_28.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_29
-                                        text: "29"
+                                        text: "28"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_29.text,month_label.text) 
                                     MDTextButton:
                                         id: textButton_30
-                                        text: "30"
+                                        text: "29"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_30.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_31
-                                        text: "31"
+                                        text: "30"
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
                                             app.change_title(textButton_31.text,month_label.text)
                                     MDTextButton:
                                         id: textButton_32
-                                        text: ''
+                                        text: '31'
                                         font_size: dp(25)
                                         on_release: 
                                             app.root.ids.scr_mngr.current = 'job_entry'
@@ -2123,26 +2123,29 @@ class KitchenSink(App):
         year_now = int(datetime.datetime.now().year)
         day_now = str(datetime.datetime.now().day)
 
-
-
-        print(time_now)
-        print(time_)
+        print('time_now ' + time_now)
+        print('time insert ' + time_)
+        print('Year '+ str(self.name_year))
+        print("year_ now " + str(year_now))
+        print('month_now ' + self.number2)
+        print('month ukazan ' +self.main_widget.ids.month_label.text)
+        print('day now '+day_now)
+        print('day_check' + self.checked_day)
 
         print(self.main_widget.ids.month_label.text)
         full = str(self.checked_day) + '.' + str(number) + '.' + str(self.name_year)
-        #print(full)
-
-        #and time_now > time_ and year_now == str(self.name_year) and self.main_widget.ids.month_label.text == number2:
 
         if (self.main_widget.ids.name_job.text != '') or (self.main_widget.ids.time_label.text != '') or str(time_) == '':
-            if int(self.name_year)>=2018:
-                print('2019>2018')
-                if int(day_now) > int(self.checked_day) and self.number2 == self.main_widget.ids.month_label.text and time_now > time_:
+            if year_now > int(self.name_year):
+                self.dialog_exeption2()
+            else:
+                if int(day_now) > int(self.checked_day)and str(self.number2) == str(self.main_widget.ids.month_label.text):
                     self.dialog_exeption2()
-                    print('09>08')
+                elif int(day_now) == int(self.checked_day) and str(self.number2) == str(self.main_widget.ids.month_label.text) and str(time_now) > str(time_):
+                    self.dialog_exeption2()
                 else:
                     sql = "INSERT INTO new_table(name, description, name_month, year_, time_, day_, full_date, status_) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"
-                    val = (name, discription, self.main_widget.ids.month_label.text, self.name_year, str(time_), self.checked_day,full, ' ')
+                    val = (name, discription, self.main_widget.ids.month_label.text, self.name_year , str(time_), self.checked_day, full, ' ')
                     self.mycursor.execute(sql, val)
                     self.mydb.commit()
                     self.main_widget.ids.name_job.text = ''
@@ -2150,17 +2153,6 @@ class KitchenSink(App):
                     self.main_widget.ids.description.text = ''
                     self.main_widget.ids.scr_mngr.get_screen('main_screen')
                     self.dialog_windofs()
-            else:
-                #print(self.datetim)
-                sql = "INSERT INTO new_table(name, description, name_month, year_, time_, day_, full_date, status_) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"
-                val = (name, discription, self.main_widget.ids.month_label.text, self.name_year , str(time_), self.checked_day, full, ' ')
-                self.mycursor.execute(sql, val)
-                self.mydb.commit()
-                self.main_widget.ids.name_job.text = ''
-                self.main_widget.ids.time_label.text = ''
-                self.main_widget.ids.description.text = ''
-                self.main_widget.ids.scr_mngr.get_screen('main_screen')
-                self.dialog_windofs()
         else:
             self.dialog_exeption()
 
@@ -2769,7 +2761,6 @@ class KitchenSink(App):
         i = 0
 
         id_mas = []
-#+ ' ' + str(",".join(status[i]))
 
         while i < len(task):
             if str(status[i][1:-2]) == "" or str(status[i][1:-2]) == " ":
@@ -2781,10 +2772,7 @@ class KitchenSink(App):
                 id = str(id_[i]),
                 text=text_up,
                 secondary_text=str(",".join(task[i])) + ' ' + \
-                               str(",".join(description[i])),
-                on_press=lambda x: self.input_dialog_id()
-
-                # on_release = lambda x: self.dialog_windofs3(self)
+                               str(",".join(description[i]))
             ))
             id_mas.append(str(i))
             self.mas.append(list)
@@ -2795,21 +2783,9 @@ class KitchenSink(App):
         while i < len(task):###СДЕЛАТЬ ДРУГОЙ ЦИКЛ
             mdlist = MDList()
             m.add_widget(mdlist)
-#on_checkbox_active = lambda x: self.print_task(list.text)
             mdlist.add_widget(self.mas[i])
             self.mas[i].add_widget(IconLeftSampleWidget(id = 'che',text = id_mas[i]))
-            #self.mas[i].add_widget(IconRightSampleWidget(icon = 'basket-fill', on_release = lambda x: self.print_task(self.mas[0].text)))###СДЕЛАТЬ ДРУГОЙ ЦИКЛ
-            print(self.mas[i].id)
-            #if self.main_widget.ids.che.active == True:
-            #    print('true')
             i = i + 1
-
-        #self.main_widget.ids.b10.on_press = lambda x: self.print_task(mas[i].text)
-        #if self.main_widget.ids.che.active == true:
-        #    print('task')
-        #df = ['afs','sd','po']
-        #print(df[0])
-        #print(self.main_widget.ids.asf.text)
 
         del id_[:]
         id_[:] = []
@@ -2834,14 +2810,6 @@ class KitchenSink(App):
             self.pusto(self.main_widget.ids.k)
             self.nnn(self.main_widget.ids.k, self.month_label, self.day_ot,self.day_do)
             self.main_widget.ids.text_del_id.text = ''
-            #print(self.main_widget.ids.text_del_id.text)
-
-
-    def print_task(self, event):
-        #self.peredstr.append(event)
-        print(event)
-        #event.widget.config(text="Thank you!")
-        #print(self.peredstr)
 
     def specific_day(self):
         MDDatePicker(self.set_previous_date1).open()
@@ -2852,7 +2820,6 @@ class KitchenSink(App):
         self.date_label_day = self.date_label.year
         self.pusto(self.main_widget.ids.k)
         self.nnn(self.main_widget.ids.k, self.month_label, str(self.date_label.day), str(self.date_label.day))
-
 
     def interval_day(self):
         self.pusto(self.main_widget.ids.k)
@@ -3141,7 +3108,8 @@ class KitchenSink(App):
             val = ()
             self.mycursor.execute(sql, val)
             self.mydb.commit()
-            print('Удалить')
+            self.pusto(self.main_widget.ids.k)
+            self.nnn(self.main_widget.ids.k, self.month_label, self.day_ot, self.day_do)
         if text_item == 'Перенести':
             print('Перенести')
 
