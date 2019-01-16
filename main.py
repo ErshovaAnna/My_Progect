@@ -3116,12 +3116,21 @@ class KitchenSink(App):
 
     def dialog_done(self, task):
         self.task_id = task
+        a = task[1:-2]
+        all = []
+        self.mycursor.execute("SELECT name FROM new_schema.new_table where id_1 =  " + a + ";")
+        for x in self.mycursor:
+            all.append(x)
+        #task[1:-2]
+        print(all)
         if not self.ok_cancel_dialog:
             self.ok_cancel_dialog = MDDialog(
                 title='Выбор', size_hint=(.8, .4), text_button_ok='Сделано',
-                text="Выберите действие", text_button_cancel='Перенести',
+                text=str(all[0]), text_button_cancel='Перенести',
                 events_callback = self.callback)
         self.ok_cancel_dialog.open()
+        del all[:]
+        all[:]=[]
 
     def callback(self, text_item):
 
