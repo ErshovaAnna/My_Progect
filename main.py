@@ -36,7 +36,7 @@ from kivy.uix.recycleview import RecycleView
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
 
 from kivymd.bottomsheet import MDListBottomSheet, MDGridBottomSheet
-from kivymd.button import MDIconButton
+from kivymd.button import MDIconButton, MDRoundFlatButton, MDTextButton
 from kivymd.date_picker import MDDatePicker
 from kivymd.dialog import MDInputDialog, MDDialog
 from kivymd.list import ILeftBody, ILeftBodyTouch, IRightBodyTouch, MDList, ThreeLineListItem, ThreeLineIconListItem, ThreeLineAvatarIconListItem
@@ -679,6 +679,18 @@ NavigationLayout:
                                 pos_hint: {'center_x': 0.5, 'center_y': .97}
                                 on_press: 
                                     app.interval_day()
+                            MDTextField:
+                                id: text_del_id
+                                hint_text: "Номер"
+                                pos_hint: {'center_x': 0.5, 'center_y': .95}
+                            MDRaisedButton:
+                                
+                                text: "Удалить"
+                                elevation_normal: 2
+                                opposite_colors: True
+                                pos_hint: {'center_x': 0.5, 'center_y': .97}
+                                on_press: 
+                                    app.delete_button()
                                                          
 
                     MDBottomNavigationItem:
@@ -689,7 +701,7 @@ NavigationLayout:
                         on_enter:
                             app.pusto(k) 
                             app.test_conection()
-                            app.print_date_time()
+                            #app.print_date_time()
                             #app.insert_note_re_v(n)
                             
                         GridLayout:
@@ -1903,9 +1915,9 @@ class KitchenSink(App):
     def __init__(self, **kwargs):
         super(KitchenSink, self).__init__(**kwargs)
 
-        #sched = BackgroundScheduler()
-        #sched.add_job(self.print_date_time, 'interval', seconds =30)
-        #sched.start()
+        sched = BackgroundScheduler()
+        sched.add_job(self.print_date_time, 'interval', seconds =30)
+        sched.start()
 
         self.mydb = mysql.connector.connect(
             host="127.0.0.1",
@@ -1960,6 +1972,9 @@ class KitchenSink(App):
         self.month_label = ''
         self.number2 = ''
         self.peredstr = []
+        self.task_id = ''
+        self.mas = []
+
 
         self.mycursor = self.mydb.cursor()
         Window.bind(on_keyboard=self.events)
@@ -2004,6 +2019,7 @@ class KitchenSink(App):
             while i < len(time_):
                 print(time_[i][2:-3])
                 if time_now[0] == time_[i][2:-3]:
+                    self.dialog_done(id_[i])
                     print(time_now[0] + '>' + time_[i][2:-3])
                 i = i+1
         else:
@@ -2124,8 +2140,8 @@ class KitchenSink(App):
                     self.dialog_exeption2()
                     print('09>08')
                 else:
-                    sql = "INSERT INTO new_table(name, description, name_month, year_, time_, day_, full_date) VALUES(%s, %s, %s, %s, %s, %s, %s)"
-                    val = (name, discription, self.main_widget.ids.month_label.text, self.name_year, str(time_), self.checked_day,full)
+                    sql = "INSERT INTO new_table(name, description, name_month, year_, time_, day_, full_date, status_) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"
+                    val = (name, discription, self.main_widget.ids.month_label.text, self.name_year, str(time_), self.checked_day,full, ' ')
                     self.mycursor.execute(sql, val)
                     self.mydb.commit()
                     self.main_widget.ids.name_job.text = ''
@@ -2135,8 +2151,8 @@ class KitchenSink(App):
                     self.dialog_windofs()
             else:
                 #print(self.datetim)
-                sql = "INSERT INTO new_table(name, description, name_month, year_, time_, day_, full_date) VALUES(%s, %s, %s, %s, %s, %s, %s)"
-                val = (name, discription, self.main_widget.ids.month_label.text, self.name_year , str(time_), self.checked_day, full)
+                sql = "INSERT INTO new_table(name, description, name_month, year_, time_, day_, full_date, status_) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"
+                val = (name, discription, self.main_widget.ids.month_label.text, self.name_year , str(time_), self.checked_day, full, ' ')
                 self.mycursor.execute(sql, val)
                 self.mydb.commit()
                 self.main_widget.ids.name_job.text = ''
@@ -2711,6 +2727,8 @@ class KitchenSink(App):
             i=i+1
 
     def nnn(self, m, month, q, s):
+        del self.mas[:]
+        self.mas[:] = []
         self.month_label = month
         title_ = month + ' ' + str(self.name_year)
         self.main_widget.ids.toolbar.title = title_
@@ -2720,6 +2738,7 @@ class KitchenSink(App):
         day_ = []
         id_ = []
         full_date = []
+        status = []
         self.mycursor.execute("SELECT name FROM new_schema.new_table where name_month = %s and year_ = %s and day_ BETWEEN %s AND %s ORDER BY  cast(day_ as unsigned);", (month,self.name_year,q,s))
         for x in self.mycursor:
             task.append(x)
@@ -2738,25 +2757,35 @@ class KitchenSink(App):
         self.mycursor.execute("SELECT id_1 FROM new_schema.new_table where name_month = %s and year_ = %s and day_ BETWEEN %s AND %s ORDER BY  cast(day_ as unsigned);",(month,self.name_year,q,s))
         for x in self.mycursor:
             id_.append(x)
+        self.mycursor.execute("SELECT status_ FROM new_schema.new_table where name_month = %s and year_ = %s and day_ BETWEEN %s AND %s ORDER BY  cast(day_ as unsigned);",
+            (month, self.name_year, q, s))
+        for x in self.mycursor:
+            status.append(str(x))
 
-        print (time_)
+        print (status)
         i = 0
-        mas = []
+
+        id_mas = []
+#+ ' ' + str(",".join(status[i]))
 
         while i < len(task):
-            text_up = str(",".join(full_date[i])) + ' ' + str(",".join(time_[i]))
-            id__ = 'b' + str(i)
+            if str(status[i][1:-2]) == "" or str(status[i][1:-2]) == " ":
+                status[i] = ''
+            id__ = str(i)
+            text_up = str(",".join(full_date[i])) + ' ' + str(",".join(time_[i]))+ ' ' + status[i][1:-2]
+            print(str(id_[i]))
             list = (ThreeLineAvatarIconListItem(
-                id = id__,
+                id = str(id_[i]),
                 text=text_up,
                 secondary_text=str(",".join(task[i])) + ' ' + \
                                str(",".join(description[i])),
-                on_press=lambda x: self.print_task(list.text)
+                on_press=lambda x: self.input_dialog_id()
 
                 # on_release = lambda x: self.dialog_windofs3(self)
             ))
-            mas.append(list)
-            print(mas[i])
+            id_mas.append(str(i))
+            self.mas.append(list)
+            print(self.mas[i])
             i=i+1
 
         i=0
@@ -2764,10 +2793,10 @@ class KitchenSink(App):
             mdlist = MDList()
             m.add_widget(mdlist)
 #on_checkbox_active = lambda x: self.print_task(list.text)
-            mdlist.add_widget(mas[i],index = i)
-            mas[i].add_widget(IconLeftSampleWidget(id = 'che',active = False))
-            mas[i].add_widget(IconRightSampleWidget(icon = 'basket-fill', on_release = lambda x: self.print_task(mas[0].text)))###СДЕЛАТЬ ДРУГОЙ ЦИКЛ
-            print(mas[i].id)
+            mdlist.add_widget(self.mas[i])
+            self.mas[i].add_widget(IconLeftSampleWidget(id = 'che',text = id_mas[i]))
+            #self.mas[i].add_widget(IconRightSampleWidget(icon = 'basket-fill', on_release = lambda x: self.print_task(self.mas[0].text)))###СДЕЛАТЬ ДРУГОЙ ЦИКЛ
+            print(self.mas[i].id)
             #if self.main_widget.ids.che.active == True:
             #    print('true')
             i = i + 1
@@ -2779,6 +2808,8 @@ class KitchenSink(App):
         #print(df[0])
         #print(self.main_widget.ids.asf.text)
 
+        del id_[:]
+        id_[:] = []
         del task[:]
         task[:] = []
         del description[:]
@@ -2788,9 +2819,18 @@ class KitchenSink(App):
         del time_[:]
         time_[:] = []
 
-    #def print_task(self, task):
-    #    caller = self.main_widget
-    #    print(caller.)
+    def delete_button(self):
+        if self.main_widget.ids.text_del_id.text.isdigit() == True:
+
+            print(self.mas[int(self.main_widget.ids.text_del_id.text)].id)
+            a = self.mas[int(self.main_widget.ids.text_del_id.text)].id
+            sql = "DELETE FROM new_schema.new_table WHERE id_1 = %s"
+            adr = (a,)
+
+            #self.mycursor.execute(sql, adr)
+
+            #self.mydb.commit()
+            #print(self.main_widget.ids.text_del_id.text)
 
 
     def print_task(self, event):
@@ -3041,17 +3081,28 @@ class KitchenSink(App):
                 text_button_ok='Ok', events_callback=lambda x: None)
         self.input_dialog.open()
 
+    def input_dialog_id(self):
+        if not self.input_dialog:
+            self.input_dialog = MDInputDialog(
+                title='Удаление', text='Введите',size_hint=(.8, .4),
+                text_button_ok='Ok', events_callback=lambda x:self.callb(self.input_dialog.text))
+        self.input_dialog.open()
+
+    def callb(self, text):
+        #self.main_widget.ids.input_dial.text
+        print(text)
+
     def dialog_windofs(self):
         if not self.alert_dialog1:
             self.alert_dialog1 = MDDialog(
                 title = 'Готово', size_hint=(.8, .4), text_button_ok='Ok',
-                text="Задание создано успешно!", events_callback=lambda x: None
+                text="Задание создано успешно!", events_callback= lambda x: None
             )
         self.alert_dialog1.open()
 
+
     def dialog_windofs3(self,widget):
-        #widget.is_selected = True
-        #print(widget.text)
+
         if not self.ok_cancel_dialog:
             self.ok_cancel_dialog = MDDialog(
                 title='Выбор', size_hint=(.8, .4), text_button_ok='Удалить',
@@ -3059,8 +3110,24 @@ class KitchenSink(App):
                 events_callback = self.callback)
         self.ok_cancel_dialog.open()
 
+    def dialog_done(self, task):
+        self.task_id = task
+        if not self.ok_cancel_dialog:
+            self.ok_cancel_dialog = MDDialog(
+                title='Выбор', size_hint=(.8, .4), text_button_ok='Сделано',
+                text="Выберите действие", text_button_cancel='Перенести',
+                events_callback = self.callback)
+        self.ok_cancel_dialog.open()
+
     def callback(self, text_item):
-        if text_item == 'Удалить':
+
+        print(self.task_id[1:-2])
+        a = str(self.task_id[1:-2])
+        if text_item == 'Сделано':
+            sql = "UPDATE new_schema.new_table SET status_ = 'Выполнено' WHERE (id_1 = %s);"
+            val = (a,)
+            self.mycursor.execute(sql, val)
+            self.mydb.commit()
             print('Удалить')
         if text_item == 'Перенести':
             print('Перенести')
@@ -3199,7 +3266,7 @@ class AvatarSampleWidget(ILeftBody, Image):
     pass
 
 
-class IconLeftSampleWidget(ILeftBodyTouch, MDCheckbox):
+class IconLeftSampleWidget(ILeftBodyTouch, MDTextButton):
     pass
 
 
