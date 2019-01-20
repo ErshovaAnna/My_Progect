@@ -1910,7 +1910,7 @@ class KitchenSink(App):
     theme_cls = ThemeManager()
     theme_cls.primary_palette = 'Blue'
     previous_date = ObjectProperty()
-
+    title = "Планнер"
 
     def __init__(self, **kwargs):
         super(KitchenSink, self).__init__(**kwargs)
@@ -1978,6 +1978,8 @@ class KitchenSink(App):
         self.day_do = ''
         self.global_id_update = ''
         self.mycursor = self.mydb.cursor()
+        self.len_list = 0
+        self.full = ''
         Window.bind(on_keyboard=self.events)
 
     def print_date_time(self):
@@ -2131,30 +2133,52 @@ class KitchenSink(App):
         print('month ukazan ' +self.main_widget.ids.month_label.text)
         print('day now '+day_now)
         print('day_check' + self.checked_day)
-
+        time_pro = []
         print(self.main_widget.ids.month_label.text)
         full = str(self.checked_day) + '.' + str(number) + '.' + str(self.name_year)
+        a = '166'
+        date_l_day = '28'
+        month_now = "'Январь'"
+        date_l_year = '2019'
+        full = "'28.1.2019'"
 
-        if (self.main_widget.ids.name_job.text != '') or (self.main_widget.ids.time_label.text != '') or str(time_) == '':
-            if year_now > int(self.name_year):
-                self.dialog_exeption2()
-            else:
-                if int(day_now) > int(self.checked_day)and str(self.number2) == str(self.main_widget.ids.month_label.text):
-                    self.dialog_exeption2()
-                elif int(day_now) == int(self.checked_day) and str(self.number2) == str(self.main_widget.ids.month_label.text) and str(time_now) > str(time_):
+
+        self.mycursor.execute("SELECT time_ FROM new_schema.new_table where name_month = %s and year_ = %s and day_ BETWEEN %s AND %s ORDER BY  cast(day_ as unsigned);",(self.number2, self.name_year, self.checked_day, self.checked_day))
+        for x in self.mycursor:
+            time_pro.append(x)
+        f=0
+        i = 0
+        while i != len(time_pro):
+            print(str(time_pro[i])[2:-3])
+            print(time_)
+            if str(time_pro[i])[2:-3] == time_:
+                f = 1
+            i = i+1
+
+        if f == 0:
+            if (self.main_widget.ids.name_job.text != '') or (self.main_widget.ids.time_label.text != '') or str(time_) != '':
+                if year_now > int(self.name_year):
                     self.dialog_exeption2()
                 else:
-                    sql = "INSERT INTO new_table(name, description, name_month, year_, time_, day_, full_date, status_) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"
-                    val = (name, discription, self.main_widget.ids.month_label.text, self.name_year , str(time_), self.checked_day, full, ' ')
-                    self.mycursor.execute(sql, val)
-                    self.mydb.commit()
-                    self.main_widget.ids.name_job.text = ''
-                    self.main_widget.ids.time_label.text = ''
-                    self.main_widget.ids.description.text = ''
-                    self.main_widget.ids.scr_mngr.get_screen('main_screen')
-                    self.dialog_windofs()
+                    if int(day_now) > int(self.checked_day)and str(self.number2) == str(self.main_widget.ids.month_label.text):
+                        self.dialog_exeption2()
+                    elif int(day_now) == int(self.checked_day) and str(self.number2) == str(self.main_widget.ids.month_label.text) and str(time_now) > str(time_):
+                        self.dialog_exeption2()
+                    else:
+                        sql = "INSERT INTO new_table(name, description, name_month, year_, time_, day_, full_date, status_) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"
+                        val = (name, discription, self.main_widget.ids.month_label.text, self.name_year , str(time_), self.checked_day, full, ' ')
+                        self.mycursor.execute(sql, val)
+                        self.mydb.commit()
+                        self.main_widget.ids.name_job.text = ''
+                        self.main_widget.ids.time_label.text = ''
+                        self.main_widget.ids.description.text = ''
+                        self.main_widget.ids.scr_mngr.get_screen('main_screen')
+                        self.dialog_windofs()
+            else:
+                self.dialog_exeption()
         else:
-            self.dialog_exeption()
+            self.dialog_exeption3()
+        #time_ = ''
 
     def show_year(self, s):
 
@@ -2757,7 +2781,7 @@ class KitchenSink(App):
         for x in self.mycursor:
             status.append(str(x))
 
-        print (status)
+        #print (status)
         i = 0
 
         id_mas = []
@@ -2767,7 +2791,7 @@ class KitchenSink(App):
                 status[i] = ''
             id__ = str(i)
             text_up = str(",".join(full_date[i])) + ' ' + str(",".join(time_[i]))+ ' ' + status[i][1:-2]
-            print(str(id_[i]))
+            #print(str(id_[i]))
             list = (ThreeLineAvatarIconListItem(
                 id = str(id_[i]),
                 text=text_up,
@@ -2776,7 +2800,8 @@ class KitchenSink(App):
             ))
             id_mas.append(str(i))
             self.mas.append(list)
-            print(self.mas[i])
+            #print(self.mas[i])
+            self.len_list = i
             i=i+1
 
         i=0
@@ -2799,7 +2824,7 @@ class KitchenSink(App):
         time_[:] = []
 
     def delete_button(self):
-        if self.main_widget.ids.text_del_id.text.isdigit() == True:
+        if self.main_widget.ids.text_del_id.text.isdigit() == True and int(self.main_widget.ids.text_del_id.text) <= self.len_list:
 
             print(self.mas[int(self.main_widget.ids.text_del_id.text)].id)
             a = self.mas[int(self.main_widget.ids.text_del_id.text)].id[1:-2]
@@ -3084,7 +3109,7 @@ class KitchenSink(App):
         if not self.ok_cancel_dialog:
             self.ok_cancel_dialog = MDDialog(
                 title='Выбор', size_hint=(.8, .4), text_button_ok='Сделано',
-                text=str(all[0]), text_button_cancel='Перенести',
+                text=str(all[0][2:-3]), text_button_cancel='Перенести',
                 events_callback = self.callback)
         self.ok_cancel_dialog.open()
         del all[:]
@@ -3103,6 +3128,24 @@ class KitchenSink(App):
             self.nnn(self.main_widget.ids.k, self.month_label, self.day_ot, self.day_do)
         if text_item == 'Перенести':
             MDDatePicker(self.set_previous_date2).open()
+
+    def get_time(self, instance, time):
+        a = str(self.task_id[1:-2])
+        time_ = str("'" + str(time) + "'")
+        print(time_)
+        sql1 = "UPDATE new_schema.new_table SET new_table.time_ = " + str(time_) + " WHERE id_1 = " + a + ";"
+        val = ()
+        self.mycursor.execute(sql1, val)
+        self.mydb.commit()
+        self.dial(str(time), self.full)
+
+    def dial(self,time_, date_):
+        if not self.alert_dialog1:
+            self.alert_dialog1 = MDDialog(
+                title = 'Готово', size_hint=(.8, .4), text_button_ok='Ok',
+                text="Задание перенесено на " + date_ + ' на '+ time_, events_callback= lambda x: None
+            )
+        self.alert_dialog1.open()
 
     def set_previous_date2(self, date_obj):
         a = str(self.task_id[1:-2])
@@ -3127,22 +3170,32 @@ class KitchenSink(App):
                       "Октябрь",
                       "Ноябрь",
                       "Декабрь"]
-        month_now = all_months[date_l_month]
-        full = str(str(date_l_day) + '.' + str(date_l_month) + '.' + str(date_l_year))
-        sql = "UPDATE new_schema.new_table SET day_ = " + str(date_l_day) + " and month_now = " + str(month_now) + " and year_ = " + str(date_l_year) + " and full_date = " + str(full) + " WHERE id_1 =  " + a + ";"
-        #sql = "UPDATE new_schema.new_table SET day_ = %s and name_month = %s and year_ = %s  and full_date = %s WHERE id_1 =  " + a + ";"
-        val = ()
-        print(str(date_l_day), str(month_now),str(date_l_year), full)
-        self.mycursor.execute(sql, val)
+        month_now = "'" + all_months[date_l_month] + "'"
+        self.full = str("'" + str(date_l_day) + '.' + str(date_l_month) + '.' + str(date_l_year)+ "'")
+        sql1 = "UPDATE new_schema.new_table SET day_ = " + str(date_l_day) + ", new_table.name_month = " + str(month_now) + ", year_ = " + str(date_l_year) + ", full_date = " + str(self.full) + " WHERE id_1 =  " + a + ";"
+        val1 = ()
+        self.mycursor.execute(sql1, val1)
         self.mydb.commit()
-        self.pusto(self.main_widget.ids.k)
-        self.nnn(self.main_widget.ids.k, self.month_label, self.day_ot, self.day_do)
+        time_dialog = MDTimePicker()
+        time_dialog.bind(time=self.get_time)
+        time_dialog.open()
+        #print(str(date_l_day), str(month_now),str(date_l_year), full)
+        #self.pusto(self.main_widget.ids.k)
+        #self.nnn(self.main_widget.ids.k, self.month_label, self.day_ot, self.day_do)
 
     def dialog_exeption(self):
         if not self.alert_dialog2:
             self.alert_dialog2 = MDDialog(
                 title = 'Ошибка', size_hint=(.8, .4), text_button_ok='Ok',
                 text="Проверьте заполнение всех полей", events_callback=lambda x: None
+            )
+        self.alert_dialog2.open()
+
+    def dialog_exeption3(self):
+        if not self.alert_dialog2:
+            self.alert_dialog2 = MDDialog(
+                title = 'Ошибка', size_hint=(.8, .4), text_button_ok='Ok',
+                text="На это время уже уже запланировано дело. Измените время", events_callback=lambda x: None
             )
         self.alert_dialog2.open()
 
